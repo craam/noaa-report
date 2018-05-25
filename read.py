@@ -19,19 +19,27 @@ def main():
         for event in data:
             if event[1] == "+":
                 del event[1]
-            print(event)
 
     particulars = []
     for i in data:
         try:
-            particulars.append(i[8])
+            last_index = len(i) - 1
+            if not i[last_index].isdigit() and len(i[last_index]) != 4:
+                particula = i[8] + " " + i[9]
+            else:
+                particula = i[8]
+            particulars.append(particula)
         except IndexError:
             particulars.append("None")
 
     reg = []
     for i in data:
         try:
-            reg.append(i[9])
+            last_index = len(i) - 1
+            if i[last_index].isdigit() and len(i[last_index]) == 4:
+                reg.append(i[last_index])
+            else:
+                reg.append("None")
         except IndexError:
             reg.append("None")
 
