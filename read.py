@@ -1,11 +1,31 @@
+import sys
+
 import pandas as pd
 
+class NoaaReport:
+
+    def set_observatories(self, data):
+        observatories = []
+        for i in data:
+            if i[4].isalpha() and len(i[4]) == 3:
+                observatories.append(i[4])
+            else:
+                observatories.append("None")
+        return observatories
+
+    def set_Qs(self, data):
+        Qs = []
+        for i in data:
+            if len(i[5]) == 1:
+                Qs.append(i[5])
+            else:
+                Qs.append("None")
 
 def main():
     """
     Reads the noaa report.
     """
-    with open("20020102events.txt") as _file:
+    with open(sys.argv[1]) as _file:
         data = []
         for line in _file.readlines():
             sep = line.split()
@@ -19,6 +39,20 @@ def main():
         for event in data:
             if event[1] == "+":
                 del event[1]
+
+    observatories = []
+    for i in data:
+        if i[4].isalpha() and len(i[4]) == 3:
+            observatories.append(i[4])
+        else:
+            observatories.append("None")
+
+    Qs = []
+    for i in data:
+        if len(i[5]) == 1:
+            Qs.append(i[5])
+        else:
+            Qs.append("None")
 
     particulars = []
     for i in data:
@@ -48,8 +82,8 @@ def main():
         "begin": [i[1] for i in data],
         "max": [i[2] for i in data],
         "end": [i[3] for i in data],
-        "obs": [i[4] for i in data],
-        "Q": [i[5] for i in data],
+        "obs": observatories,
+        "Q": Qs,
         "type": [i[6] for i in data],
         "loc/freq": [i[7] for i in data],
         "particulars": particulars,
