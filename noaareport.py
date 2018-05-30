@@ -25,7 +25,9 @@ class NoaaReport:
                 sep = line.split()
 
                 try:
-                    if not sep[0].startswith(":") and not sep[0].startswith("#"):
+                    if (not sep[0].startswith(":") and
+                            not sep[0].startswith("#")):
+
                         self.data.append(sep)
                 except IndexError:
                     pass
@@ -69,12 +71,14 @@ class NoaaReport:
                 last_index = len(info) - 1
                 if info[last_index].isdigit() and len(info[last_index]) == 4:
                     if len(info) > 10:
-                        particula = info[last_index - 2] + " " + info[last_index - 1]
+                        particula = (info[last_index - 2] + " " +
+                                     info[last_index - 1])
                     else:
                         particula = info[last_index - 1]
                 else:
                     if len(info) > 9:
-                        particula = info[last_index - 1] + " " + info[last_index]
+                        particula = (info[last_index - 1] + " " +
+                                     info[last_index])
                     else:
                         particula = info[last_index]
 
