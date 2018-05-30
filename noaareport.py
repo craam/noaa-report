@@ -3,7 +3,7 @@ import sys
 import pandas as pd
 
 class NoaaReport:
-    """
+    """Read noaa report.
     """
 
     def __init__(self):
@@ -12,16 +12,14 @@ class NoaaReport:
 
     def _check_data(self):
         """Checks if the data has already been saved. """
-        if len(self.data) == 0:
-            self._read_data()
+        if len(self.data):
+            return True
 
-        return True
+        self._read_data()
 
     def _read_data(self):
+        """Reads the noaa report.
         """
-        Reads the noaa report.
-        """
-
         with open(self.filename) as _file:
             for line in _file.readlines():
                 sep = line.split()
@@ -38,7 +36,7 @@ class NoaaReport:
                     del event[1]
 
     def set_Qs(self):
-        """TODO"""
+        """TODO """
         self._check_data()
         Qs = []
         for info in self.data:
@@ -46,11 +44,10 @@ class NoaaReport:
                 Qs.append(info[5])
             else:
                 Qs.append("None")
-        
         return Qs
 
     def set_observatories(self):
-        """TODO"""
+        """TODO """
         self._check_data()
         index = 0
         observatories = []
@@ -64,7 +61,7 @@ class NoaaReport:
         return observatories
 
     def set_particulars(self):
-        """TODO"""
+        """TODO """
         self._check_data()
         particulars = []
         for info in self.data:
@@ -88,7 +85,7 @@ class NoaaReport:
         return particulars
 
     def set_regions(self):
-        """TODO"""
+        """TODO """
         self._check_data()
         reg = []
         for info in self.data:
@@ -104,32 +101,38 @@ class NoaaReport:
         return reg
 
     def set_event(self):
+        """TODO """
         self._check_data()
         return [i[0] for i in self.data]
 
     def set_begin(self):
+        """TODO """
         self._check_data()
         return [i[1] for i in self.data]
 
     def set_max(self):
+        """TODO """
         self._check_data()
         return [i[2] for i in self.data]
 
     def set_end(self):
+        """TODO """
         self._check_data()
         return [i[3] for i in self.data]
 
     def set_type(self):
+        """TODO """
         self._check_data()
         return [i[6] for i in self.data]
 
     def set_freq(self):
+        """TODO """
         self._check_data()
         return [i[7] for i in self.data]
 
     def set_final_data(self):
+        """TODO """
         self._check_data()
-        """TODO"""
 
         # observatories must be declared first, because it changes the
         # data list.
