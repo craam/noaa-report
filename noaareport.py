@@ -167,6 +167,7 @@ class NoaaReport:
         end_time= str(end_time)
         start_time = start_time[11:16].replace(":", "")
         end_time = end_time[11:16].replace(":", "")
+        ar = []
 
         for i in range(0, len(self.df)):
             if int(self.df["end"][i]) < 10:
@@ -175,6 +176,7 @@ class NoaaReport:
             if (int(self.df["begin"][i]) >= int(start_time)
                     and int(self.df["end"][i]) <= int(end_time)):
                 print(self.df.loc[i])
+                ar.append(self.df["reg"][i])
 
 
 if __name__ == "__main__":
