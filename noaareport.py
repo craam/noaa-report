@@ -8,13 +8,13 @@ class NoaaReport:
     """
 
     def __init__(self, filename):
-        self.filename = filename
-        self.data = []
+        self._filename = filename
+        self._data = []
         self.df = None
 
-    def _check_data(self):
+    def __check_data(self):
         """Checks if the data has already been saved. """
-        if len(self.data):
+        if len(self._data):
             return True
 
         self._read_data()
@@ -22,7 +22,7 @@ class NoaaReport:
     def _read_data(self):
         """Reads the noaa report.
         """
-        with open(self.filename) as _file:
+        with open(self._filename) as _file:
             for line in _file.readlines():
                 sep = line.split()
 
@@ -30,20 +30,20 @@ class NoaaReport:
                     if (not sep[0].startswith(":") and
                             not sep[0].startswith("#")):
 
-                        self.data.append(sep)
+                        self._data.append(sep)
                 except IndexError:
                     pass
 
-            for event in self.data:
+            for event in self._data:
                 if event[1] == "+":
                     event[0] += " +"
                     del event[1]
 
     def set_Qs(self):
         """TODO """
-        self._check_data()
+        self.__check_data()
         Qs = []
-        for info in self.data:
+        for info in self._data:
             if len(info[5]) == 1:
                 Qs.append(info[5])
             else:
@@ -52,23 +52,23 @@ class NoaaReport:
 
     def set_observatories(self):
         """TODO """
-        self._check_data()
+        self.__check_data()
         index = 0
         observatories = []
-        while index < len(self.data):
-            if len(self.data[index][4]) == 3:
-                observatories.append(self.data[index][4])
+        while index < len(self._data):
+            if len(self._data[index][4]) == 3:
+                observatories.append(self._data[index][4])
                 index += 1
             else:
-                del self.data[index]
+                del self._data[index]
 
         return observatories
 
     def set_particulars(self):
         """TODO """
-        self._check_data()
+        self.__check_data()
         particulars = []
-        for info in self.data:
+        for info in self._data:
             try:
                 last_index = len(info) - 1
                 if info[last_index].isdigit() and len(info[last_index]) == 4:
@@ -92,9 +92,9 @@ class NoaaReport:
 
     def set_regions(self):
         """TODO """
-        self._check_data()
+        self.__check_data()
         reg = []
-        for info in self.data:
+        for info in self._data:
             try:
                 last_index = len(info) - 1
                 if info[last_index].isdigit() and len(info[last_index]) == 4:
@@ -108,37 +108,37 @@ class NoaaReport:
 
     def set_event(self):
         """TODO """
-        self._check_data()
-        return [i[0] for i in self.data]
+        self.__check_data()
+        return [i[0] for i in self._data]
 
     def set_begin(self):
         """TODO """
-        self._check_data()
-        return [i[1] for i in self.data]
+        self.__check_data()
+        return [i[1] for i in self._data]
 
     def set_max(self):
         """TODO """
-        self._check_data()
-        return [i[2] for i in self.data]
+        self.__check_data()
+        return [i[2] for i in self._data]
 
     def set_end(self):
         """TODO """
-        self._check_data()
-        return [i[3] for i in self.data]
+        self.__check_data()
+        return [i[3] for i in self._data]
 
     def set_type(self):
         """TODO """
-        self._check_data()
-        return [i[6] for i in self.data]
+        self.__check_data()
+        return [i[6] for i in self._data]
 
     def set_freq(self):
         """TODO """
-        self._check_data()
-        return [i[7] for i in self.data]
+        self.__check_data()
+        return [i[7] for i in self._data]
 
     def set_final_data(self):
         """TODO """
-        self._check_data()
+        self.__check_data()
 
         # observatories must be declared first, because it changes the
         # data list.
@@ -174,9 +174,7 @@ class NoaaReport:
 
             if (int(self.df["begin"][i]) >= int(start_time)
                     and int(self.df["end"][i]) <= int(end_time)):
-                print(self.df.iloc[i])
-                # print("\nBegin: {}, End: {}".format(
-                #     self.df["begin"][i], self.df["end"][i]))
+                print(self.df.loc[i])
 
 
 if __name__ == "__main__":
