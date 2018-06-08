@@ -1,10 +1,11 @@
 import sys
 
 import pandas as pd
+import matplotlib.pyplot as plt
 
 
 class NoaaReport:
-    """Read noaa report.
+    """Reads noaa report.
     """
 
     def __init__(self, filename):
@@ -92,6 +93,9 @@ class NoaaReport:
 
     def set_regions(self):
         """TODO """
+        #
+        #
+        #
         self.__check_data()
         reg = []
         for info in self._data:
@@ -162,26 +166,58 @@ class NoaaReport:
         self.df = pd.DataFrame(final_data, columns=columns)
         print(self.df)
 
-    def search_time(self, start_time, end_time):
+    def get_active_region(self, start_time, end_time):
+        """Returns registered active region of a certain time range.
+        
+        Arguments:
+            start_time {str} -- event's start time.
+            end_time {str} -- event's end time.
+        """
+
         start_time = str(start_time)
         end_time= str(end_time)
         start_time = start_time[11:16].replace(":", "")
         end_time = end_time[11:16].replace(":", "")
-        ar = []
+        # ar = []
+        freqs = []
+        parts = []
 
         for i in range(0, len(self.df)):
-            if int(self.df["end"][i]) < 10:
-                continue
+            if (self.df["type"][i] == "XRA" and
+                    self.df["particulars"][i].startswith("X")):
+                sav = i
+                # print(self.df.loc[i])
 
-            if (int(self.df["begin"][i]) >= int(start_time)
-                    and int(self.df["end"][i]) <= int(end_time)):
-                print(self.df.loc[i])
-                ar.append(self.df["reg"][i])
+            if (self.df["type"][i] == "RBR" and self.df["begin"][i] > "1153"
+                    and self.df["begin"][i] < "1300"):
+                print(self.df["begin"][i])
+                print(self.df["loc/freq"][i])
+                freqs.append(self.df["loc/freq"][i])
+                if self.df["particulars"][i].split()[0].isnumeric():
+                    print(self.df["particulars"][i].split()[0])
+                    parts.append(self.df["particulars"][i].split()[0])
+
+                print("\n")
+
+        print(freqs)
+        print(parts)
+        plt.plot(freqs, parts)
+
+        """
+        if int(self.df["end"][i]) < 10:
+            continue
+        if (int(self.df["begin"][i]) >= int(start_time)
+                and int(self.df["end"][i]) <= int(end_time)):
+            # print(self.df.loc[i])
+            ar.append(self.df["reg"][i])
+        """
+
+        # print(self.df.loc[31])
 
 
 if __name__ == "__main__":
     report = NoaaReport(sys.argv[1])
     report.set_final_data()
-    report.search_time(
+    report.get_active_region(
         "2002-04-09 12:44:43.999440+00:00",
         "2002-04-09 13:09:58.001280+00:00")
