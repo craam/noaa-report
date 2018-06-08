@@ -1,17 +1,28 @@
 import sys
 
 import pandas as pd
-import matplotlib.pyplot as plt
 
 
 class NoaaReport:
     """Reads noaa report.
     """
 
-    def __init__(self, filename):
-        self._filename = filename
+    def __init__(self, year, month, day):
+        self._year = str(year)
+        self._month = str(month)
+        self._day = str(day)
+        self._filename = self.__set_filename()
         self._data = []
         self.df = None
+
+    def __set_filename(self):
+        if len(self._month) == 1:
+            self._month = "0" + self._month
+        if len(self._day) == 1:
+            self._day = "0" + self._day
+        filename = self._year + self._month + self._day + "events.txt"
+        filename = "reports/2017_events/" + filename
+        return filename
 
     def __check_data(self):
         """Checks if the data has already been saved. """
@@ -30,7 +41,6 @@ class NoaaReport:
                 try:
                     if (not sep[0].startswith(":") and
                             not sep[0].startswith("#")):
-
                         self._data.append(sep)
                 except IndexError:
                     pass
@@ -93,9 +103,6 @@ class NoaaReport:
 
     def set_regions(self):
         """TODO """
-        #
-        #
-        #
         self.__check_data()
         reg = []
         for info in self._data:
@@ -199,10 +206,6 @@ class NoaaReport:
 
                 print("\n")
 
-        print(freqs)
-        print(parts)
-        plt.plot(freqs, parts)
-
         """
         if int(self.df["end"][i]) < 10:
             continue
@@ -216,7 +219,7 @@ class NoaaReport:
 
 
 if __name__ == "__main__":
-    report = NoaaReport(sys.argv[1])
+    report = NoaaReport(2017, 9, 6)
     report.set_final_data()
     report.get_active_region(
         "2002-04-09 12:44:43.999440+00:00",
