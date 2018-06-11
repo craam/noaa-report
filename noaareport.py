@@ -84,15 +84,25 @@ class NoaaReport:
         self.__check_data()
         particulars = []
         index = 0
-        # for info in self._data:
+        regs = self.set_regions()
         while index < len(self._data):
             try:
                 last_index = len(self._data[index]) - 1
+                last_reg = ""
+                for reg in regs:
+                    if reg != "None":
+                        last_reg = reg
+                        break
+
                 if (self._data[index][last_index].isdigit()
                         and len(self._data[index][last_index]) == 4):
                     if len(self._data[index]) > 10:
                         particular = (self._data[index][last_index - 2] + " " +
                                      self._data[index][last_index - 1])
+                    elif (self._data[index][last_index] != last_reg
+                            and int(self._data[index][last_index])-1 != last_reg):
+                        print(self._data[index][last_index])
+                        particular = self._data[index][last_index]
                     else:
                         particular = self._data[index][last_index - 1]
                 else:
@@ -113,14 +123,12 @@ class NoaaReport:
     def set_regions(self):
         """TODO """
         self.__check_data()
-        self.ars = []
         reg = []
         for info in self._data:
             try:
                 last_index = len(info) - 1
                 if info[last_index].isdigit() and len(info[last_index]) == 4:
                     reg.append(info[last_index])
-                    self.ars.append(infdo[last_index])
                 else:
                     reg.append("None")
             except IndexError:
@@ -173,18 +181,16 @@ class NoaaReport:
             "Q": self.set_Qs(),
             "type": self.set_type(),
             "loc/freq": self.set_freq(),
-            "reg": self.set_regions()
             "particulars": self.set_particulars(),
             "reg": self.set_regions()
         }
 
-        columns = {"event", "begin", "max",
+        columns = ["event", "begin", "max",
                    "end", "obs", "Q", "type",
-                   "loc/freq", "particulars", "reg"}
+                   "loc/freq", "particulars", "reg"]
 
         self.df = pd.DataFrame(final_data, columns=columns)
         print(self.df)
-        self.ar_error_fix()
 
     def ar_error_fix(self):
         regs = []
