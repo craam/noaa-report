@@ -296,6 +296,9 @@ class NoaaReport:
         Arguments:
             start_time {str} -- event's start time.
             end_time {str} -- event's end time.
+
+        Returns:
+            list<str> -- [description]
         """
 
         start_time = str(start_time)
@@ -312,3 +315,5 @@ class NoaaReport:
                     and self.df["end"][i] <= end_time):
                 print(self.df["begin"][i])
                 ar.append(self.df["reg"][i])
+
+        return ar
