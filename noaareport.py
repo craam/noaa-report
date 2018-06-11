@@ -199,17 +199,6 @@ class NoaaReport:
         self.df = pd.DataFrame(final_data, columns=columns)
         print(self.df)
 
-    def ar_error_fix(self):
-        regs = []
-        for reg in self.df["reg"]:
-            if reg is not "None":
-                regs.append(reg)
-        
-        for reg in self.df["reg"]:
-            if reg is not "None":
-                if reg >= regs[0]:
-                    print(reg)
-
     def get_active_region(self, start_time, end_time):
         """Returns registered active region of a certain time range.
         
@@ -226,32 +215,12 @@ class NoaaReport:
         parts = []
 
         for i in range(0, len(self.df)):
-            if (self.df["type"][i] == "XRA" and
-                    self.df["particulars"][i].startswith("X")):
-                sav = i
+            if int(self.df["end"][i]) < 10:
+                continue
+            if (int(self.df["begin"][i]) >= int(start_time)
+                    and int(self.df["end"][i]) <= int(end_time)):
                 # print(self.df.loc[i])
-
-            if (self.df["type"][i] == "RBR" and self.df["begin"][i] > "1153"
-                    and self.df["begin"][i] < "1300"):
-                # print(self.df["begin"][i])
-                # print(self.df["loc/freq"][i])
-                freqs.append(self.df["loc/freq"][i])
-                if self.df["particulars"][i].split()[0].isnumeric():
-                    # print(self.df["particulars"][i].split()[0])
-                    parts.append(self.df["particulars"][i].split()[0])
-
-                # print("\n")
-
-        """
-        if int(self.df["end"][i]) < 10:
-            continue
-        if (int(self.df["begin"][i]) >= int(start_time)
-                and int(self.df["end"][i]) <= int(end_time)):
-            # print(self.df.loc[i])
-            ar.append(self.df["reg"][i])
-        """
-
-        # print(self.df.loc[31])
+                ar.append(self.df["reg"][i])
 
 
 if __name__ == "__main__":
