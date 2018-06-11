@@ -5,6 +5,9 @@ import pandas as pd
 
 class NoaaReport:
     """Reads noaa report.
+
+    Reads the last active region on the file from the previous day,
+    and compares to the first one.
     """
 
     def __init__(self, year, month, day):
@@ -32,7 +35,7 @@ class NoaaReport:
         self._read_data()
 
     def _read_data(self):
-        """Reads the noaa report.
+        """Reads the file.
         """
         with open(self._filename) as _file:
             for line in _file.readlines():
@@ -76,40 +79,48 @@ class NoaaReport:
         return observatories
 
     def set_particulars(self):
-        """TODO """
+        """TODO 
+        """
         self.__check_data()
         particulars = []
-        for info in self._data:
+        index = 0
+        # for info in self._data:
+        while index < len(self._data):
             try:
-                last_index = len(info) - 1
-                if info[last_index].isdigit() and len(info[last_index]) == 4:
-                    if len(info) > 10:
-                        particula = (info[last_index - 2] + " " +
-                                     info[last_index - 1])
+                last_index = len(self._data[index]) - 1
+                if (self._data[index][last_index].isdigit()
+                        and len(self._data[index][last_index]) == 4):
+                    if len(self._data[index]) > 10:
+                        particular = (self._data[index][last_index - 2] + " " +
+                                     self._data[index][last_index - 1])
                     else:
-                        particula = info[last_index - 1]
+                        particular = self._data[index][last_index - 1]
                 else:
-                    if len(info) > 9:
-                        particula = (info[last_index - 1] + " " +
-                                     info[last_index])
+                    if len(self._data[index]) > 9:
+                        particular = (self._data[index][last_index - 1] + " " +
+                                     self._data[index][last_index])
                     else:
-                        particula = info[last_index]
+                        particular = self._data[index][last_index]
 
-                particulars.append(particula)
+                particulars.append(particular)
             except IndexError:
                 particulars.append("None")
+
+            index += 1
 
         return particulars
 
     def set_regions(self):
         """TODO """
         self.__check_data()
+        self.ars = []
         reg = []
         for info in self._data:
             try:
                 last_index = len(info) - 1
                 if info[last_index].isdigit() and len(info[last_index]) == 4:
                     reg.append(info[last_index])
+                    self.ars.append(infdo[last_index])
                 else:
                     reg.append("None")
             except IndexError:
@@ -162,16 +173,29 @@ class NoaaReport:
             "Q": self.set_Qs(),
             "type": self.set_type(),
             "loc/freq": self.set_freq(),
+            "reg": self.set_regions()
             "particulars": self.set_particulars(),
             "reg": self.set_regions()
         }
 
-        columns = ["event", "begin", "max",
+        columns = {"event", "begin", "max",
                    "end", "obs", "Q", "type",
-                   "loc/freq", "particulars", "reg"]
+                   "loc/freq", "particulars", "reg"}
 
         self.df = pd.DataFrame(final_data, columns=columns)
         print(self.df)
+        self.ar_error_fix()
+
+    def ar_error_fix(self):
+        regs = []
+        for reg in self.df["reg"]:
+            if reg is not "None":
+                regs.append(reg)
+        
+        for reg in self.df["reg"]:
+            if reg is not "None":
+                if reg >= regs[0]:
+                    print(reg)
 
     def get_active_region(self, start_time, end_time):
         """Returns registered active region of a certain time range.
@@ -185,7 +209,6 @@ class NoaaReport:
         end_time= str(end_time)
         start_time = start_time[11:16].replace(":", "")
         end_time = end_time[11:16].replace(":", "")
-        # ar = []
         freqs = []
         parts = []
 
@@ -197,14 +220,14 @@ class NoaaReport:
 
             if (self.df["type"][i] == "RBR" and self.df["begin"][i] > "1153"
                     and self.df["begin"][i] < "1300"):
-                print(self.df["begin"][i])
-                print(self.df["loc/freq"][i])
+                # print(self.df["begin"][i])
+                # print(self.df["loc/freq"][i])
                 freqs.append(self.df["loc/freq"][i])
                 if self.df["particulars"][i].split()[0].isnumeric():
-                    print(self.df["particulars"][i].split()[0])
+                    # print(self.df["particulars"][i].split()[0])
                     parts.append(self.df["particulars"][i].split()[0])
 
-                print("\n")
+                # print("\n")
 
         """
         if int(self.df["end"][i]) < 10:
