@@ -302,15 +302,14 @@ class NoaaReport:
         end_time= str(end_time)
         start_time = start_time[11:16].replace(":", "")
         end_time = end_time[11:16].replace(":", "")
-        freqs = []
-        parts = []
+        ar = []
 
         for i in range(0, len(self.df)):
-            if int(self.df["end"][i]) < 10:
+            if self.df["end"][i] < "10":
                 continue
-            if (int(self.df["begin"][i]) >= int(start_time)
-                    and int(self.df["end"][i]) <= int(end_time)):
-                # print(self.df.loc[i])
+
+            if (self.df["begin"][i] >= start_time
+                    and self.df["end"][i] <= end_time):
                 ar.append(self.df["reg"][i])
 
 
