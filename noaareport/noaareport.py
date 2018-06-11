@@ -313,7 +313,6 @@ class NoaaReport:
 
             if (self.df["begin"][i] >= start_time
                     and self.df["end"][i] <= end_time):
-                print(self.df["begin"][i])
                 ar.append(self.df["reg"][i])
 
         return ar
