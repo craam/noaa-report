@@ -312,13 +312,3 @@ class NoaaReport:
                     and self.df["end"][i] <= end_time):
                 print(self.df["begin"][i])
                 ar.append(self.df["reg"][i])
-        
-        print(ar)
-
-
-if __name__ == "__main__":
-    report = NoaaReport(2017, 9, 6)
-    report.set_final_data()
-    report.get_active_region(
-        "2017-09-06 11:45:00.999440+00:00",
-        "2017-09-06 12:10:00.001280+00:00")
