@@ -32,6 +32,11 @@ class NoaaReport:
 
     Reads the last active region on the file from the previous day,
     and compares to the first one.
+        
+    Arguments:
+        year {str or int} -- [description]
+        month {str or int} -- [description]
+        day {str or int} -- [description]
     """
 
     def __init__(self, year, month, day):
@@ -43,6 +48,12 @@ class NoaaReport:
         self.df = None
 
     def __set_filename(self):
+        """[summary]
+        
+        Returns:
+            str -- The name of the file.
+        """
+
         if len(self._month) == 1:
             self._month = "0" + self._month
         if len(self._day) == 1:
@@ -52,7 +63,12 @@ class NoaaReport:
         return filename
 
     def __check_data(self):
-        """Checks if the data has already been saved. """
+        """Checks if the data has already been saved.
+
+        Returns:
+            boolean -- [description]
+        """
+
         if len(self._data):
             return True
 
@@ -78,7 +94,12 @@ class NoaaReport:
                     del event[1]
 
     def set_Qs(self):
-        """TODO """
+        """[summary]
+        
+        Returns:
+            [type] -- [description]
+        """
+
         self.__check_data()
         Qs = []
         for info in self._data:
@@ -89,7 +110,12 @@ class NoaaReport:
         return Qs
 
     def set_observatories(self):
-        """TODO """
+        """[summary]
+        
+        Returns:
+            [type] -- [description]
+        """
+
         self.__check_data()
         index = 0
         observatories = []
@@ -103,8 +129,12 @@ class NoaaReport:
         return observatories
 
     def set_particulars(self):
-        """TODO 
+        """[summary]
+        
+        Returns:
+            [type] -- [description]
         """
+
         self.__check_data()
         particulars = []
         index = 0
@@ -144,7 +174,12 @@ class NoaaReport:
         return particulars
 
     def set_regions(self):
-        """TODO """
+        """[summary]
+        
+        Returns:
+            [type] -- [description]
+        """
+
         self.__check_data()
         reg = []
         rreg = []
@@ -168,37 +203,69 @@ class NoaaReport:
         return reg
 
     def set_event(self):
-        """TODO """
+        """[summary]
+        
+        Returns:
+            [type] -- [description]
+        """
+
         self.__check_data()
         return [i[0] for i in self._data]
 
     def set_begin(self):
-        """TODO """
+        """[summary]
+        
+        Returns:
+            [type] -- [description]
+        """
+
         self.__check_data()
         return [i[1] for i in self._data]
 
     def set_max(self):
-        """TODO """
+        """[summary]
+        
+        Returns:
+            [type] -- [description]
+        """
+
         self.__check_data()
         return [i[2] for i in self._data]
 
     def set_end(self):
-        """TODO """
+        """[summary]
+        
+        Returns:
+            [type] -- [description]
+        """
+
         self.__check_data()
         return [i[3] for i in self._data]
 
     def set_type(self):
-        """TODO """
+        """[summary]
+        
+        Returns:
+            [type] -- [description]
+        """
+
         self.__check_data()
         return [i[6] for i in self._data]
 
     def set_freq(self):
-        """TODO """
+        """[summary]
+        
+        Returns:
+            [type] -- [description]
+        """
+
         self.__check_data()
         return [i[7] for i in self._data]
 
     def set_final_data(self):
-        """TODO """
+        """[summary]
+        """
+
         self.__check_data()
 
         # observatories must be declared first, because it changes the
