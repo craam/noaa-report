@@ -101,7 +101,6 @@ class NoaaReport:
                                      self._data[index][last_index - 1])
                     elif (self._data[index][last_index] != last_reg
                             and int(self._data[index][last_index])-1 != last_reg):
-                        print(self._data[index][last_index])
                         particular = self._data[index][last_index]
                     else:
                         particular = self._data[index][last_index - 1]
@@ -124,11 +123,19 @@ class NoaaReport:
         """TODO """
         self.__check_data()
         reg = []
+        rreg = []
         for info in self._data:
             try:
                 last_index = len(info) - 1
                 if info[last_index].isdigit() and len(info[last_index]) == 4:
-                    reg.append(info[last_index])
+                    if len(rreg) == 0:
+                        reg.append(info[last_index])
+                        rreg.append(info[last_index])
+                    elif info[last_index] == rreg[-1]:
+                        reg.append(info[last_index])
+                        rreg.append(info[last_index])
+                    else:
+                        reg.append("None")
                 else:
                     reg.append("None")
             except IndexError:
