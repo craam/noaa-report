@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+import datetime as dt
 import sys
 
 import pandas as pd
@@ -107,7 +108,7 @@ class NoaaReport:
             if len(info[5]) == 1:
                 Qs.append(info[5])
             else:
-                Qs.append("None")
+                Qs.append(None)
         return Qs
 
     def set_observatories(self):
@@ -130,10 +131,10 @@ class NoaaReport:
         return observatories
 
     def set_particulars(self):
-        """[summary]
+        """I don't know how i made this work.
         
         Returns:
-            [type] -- [description]
+            list<st> -- [description]
         """
 
         self.__check_data()
@@ -145,7 +146,7 @@ class NoaaReport:
                 last_index = len(self._data[index]) - 1
                 last_reg = ""
                 for reg in regs:
-                    if reg != "None":
+                    if reg != None:
                         last_reg = reg
                         break
 
@@ -154,8 +155,8 @@ class NoaaReport:
                     if len(self._data[index]) > 10:
                         particular = (self._data[index][last_index - 2] + " " +
                                      self._data[index][last_index - 1])
-                    elif (self._data[index][last_index] != last_reg
-                            and int(self._data[index][last_index])-1 != last_reg):
+                    elif (int(self._data[index][last_index])+25 <= int(last_reg)
+                            and int(self._data[index][last_index])-25 >= int(last_reg)):
                         particular = self._data[index][last_index]
                     else:
                         particular = self._data[index][last_index - 1]
@@ -168,48 +169,59 @@ class NoaaReport:
 
                 particulars.append(particular)
             except IndexError:
-                particulars.append("None")
+                particulars.append(None)
 
             index += 1
 
         return particulars
 
-    def set_regions(self):
-        """[summary]
+    def set_regions(self, valid_regions_day_before=None):
+        """Get the regions from the file.
+        The region to be valid must be a 4 digit number.
+        There's a range of 25 to check if the other number will be a region,
+        or not.
         
         Returns:
-            [type] -- [description]
+            list<str> -- [description]
         """
 
         self.__check_data()
         reg = []
-        rreg = []
+        valid_regions = []
         for info in self._data:
             try:
                 last_index = len(info) - 1
                 if info[last_index].isdigit() and len(info[last_index]) == 4:
-                    if len(rreg) == 0:
+                    if len(valid_regions) == 0 and info[last_index] != "0000":
+                        if valid_regions_day_before is not None:
+                            if (int(info[last_index]) >= int(valid_regions_day_before[-1])-25
+                            and int(info[last_index]) <= int(valid_regions_day_before[-1])+25):
+                                reg.append(info[last_index])
+                                valid_regions.append(info[last_index])
+                            else:
+                                reg.append(None)
+                        else:
+                            reg.append(info[last_index])
+                            valid_regions.append(info[last_index])
+                    elif (int(info[last_index]) >= int(valid_regions[-1]) - 25
+                            and int(info[last_index]) <= int(valid_regions[-1]) + 25
+                            and info[last_index] != "0000"):
                         reg.append(info[last_index])
-                        rreg.append(info[last_index])
-                    elif (int(info[last_index]) >= int(rreg[-1]) - 10 or
-                            int(info[last_index]) <= int(rreg[-1]) + 10):
-                        print(rreg[-1])
-                        reg.append(info[last_index])
-                        rreg.append(info[last_index])
+                        valid_regions.append(info[last_index])
                     else:
-                        reg.append("None")
+                        reg.append(None)
                 else:
-                    reg.append("None")
+                    reg.append(None)
             except IndexError:
-                reg.append("None")
-        
+                reg.append(None)
+
         return reg
 
     def set_event(self):
         """[summary]
         
         Returns:
-            [type] -- [description]
+            list<str> -- [description]
         """
 
         self.__check_data()
@@ -219,7 +231,7 @@ class NoaaReport:
         """[summary]
         
         Returns:
-            [type] -- [description]
+            list<str> -- [description]
         """
 
         self.__check_data()
@@ -229,7 +241,7 @@ class NoaaReport:
         """[summary]
         
         Returns:
-            [type] -- [description]
+            list<str> -- [description]
         """
 
         self.__check_data()
@@ -239,7 +251,7 @@ class NoaaReport:
         """[summary]
         
         Returns:
-            [type] -- [description]
+            list<str> -- [description]
         """
 
         self.__check_data()
@@ -249,7 +261,7 @@ class NoaaReport:
         """[summary]
         
         Returns:
-            [type] -- [description]
+            list<str> -- [description]
         """
 
         self.__check_data()
@@ -259,17 +271,30 @@ class NoaaReport:
         """[summary]
         
         Returns:
-            [type] -- [description]
+            list<str> -- [description]
         """
 
         self.__check_data()
         return [i[7] for i in self._data]
+
+    @classmethod
+    def get_stuff_from_other_day(cls, year, month, day, path):
+        date = dt.date(int(year), int(month), int(day))
+        day_before = date - dt.timedelta(days=1)
+
+        report = cls(day_before.year, day_before.month, day_before.day, path)
+        regs = report.set_regions()
+        regs = [x for x in regs if x is not None]
+        return regs
 
     def set_final_data(self):
         """[summary]
         """
 
         self.__check_data()
+
+        regs = NoaaReport.get_stuff_from_other_day(self._year, self._month,
+                                                    self._day, self._path)
 
         # observatories must be declared first, because it changes the
         # data list.
@@ -283,13 +308,13 @@ class NoaaReport:
             "type": self.set_type(),
             "loc/freq": self.set_freq(),
             "particulars": self.set_particulars(),
-            "reg": self.set_regions()
+            "reg": self.set_regions(regs)
         }
 
         columns = ["event", "begin", "max",
                    "end", "obs", "Q", "type",
                    "loc/freq", "particulars", "reg"]
-
+        
         self.df = pd.DataFrame(final_data, columns=columns)
         print(self.df)
 
