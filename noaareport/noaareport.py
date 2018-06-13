@@ -112,7 +112,8 @@ class NoaaReport:
         return Qs
 
     def set_observatories(self):
-        """[summary]
+        """Set the obs column, and deletes the line (not on the actual file)
+        that doesn't contain it.
         
         Returns:
             [type] -- [description]
@@ -131,10 +132,13 @@ class NoaaReport:
         return observatories
 
     def set_particulars(self):
-        """I don't know how i made this work.
+        """I don't know how i made this work. But, "it just works"
+                                                    - Todd Howard.
         
         Returns:
-            list<st> -- [description]
+            list<st> -- Contains all the particulars and None if there was
+                        nothing registered at that moment (I guess that never)
+                        happens.
         """
 
         self.__check_data()
@@ -180,9 +184,12 @@ class NoaaReport:
         The region to be valid must be a 4 digit number.
         There's a range of 25 to check if the other number will be a region,
         or not.
+        The function gets the active regions from the other day to compare and
+        check if the number is truly and active region.
         
         Returns:
-            list<str> -- [description]
+            list<str> -- A list containing the regions and None if there is no
+                         region at that time.
         """
 
         self.__check_data()
