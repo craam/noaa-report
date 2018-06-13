@@ -39,10 +39,11 @@ class NoaaReport:
         day {str or int} -- [description]
     """
 
-    def __init__(self, year, month, day):
+    def __init__(self, year, month, day, path):
         self._year = str(year)
         self._month = str(month)
         self._day = str(day)
+        self._path = path
         self._filename = self.__set_filename()
         self._data = []
         self.df = None
@@ -59,7 +60,7 @@ class NoaaReport:
         if len(self._day) == 1:
             self._day = "0" + self._day
         filename = self._year + self._month + self._day + "events.txt"
-        filename = "reports/2017_events/" + filename
+        filename = self._path + filename
         return filename
 
     def __check_data(self):
@@ -190,7 +191,9 @@ class NoaaReport:
                     if len(rreg) == 0:
                         reg.append(info[last_index])
                         rreg.append(info[last_index])
-                    elif info[last_index] == rreg[-1]:
+                    elif (int(info[last_index]) >= int(rreg[-1]) - 10 or
+                            int(info[last_index]) <= int(rreg[-1]) + 10):
+                        print(rreg[-1])
                         reg.append(info[last_index])
                         rreg.append(info[last_index])
                     else:
@@ -316,3 +319,9 @@ class NoaaReport:
                 ar.append(self.df["reg"][i])
 
         return ar
+
+
+if __name__ == "__main__":
+    report = NoaaReport(sys.argv[1], sys.argv[2], sys.argv[3],
+                        sys.argv[4])
+    report.set_final_data()
