@@ -35,9 +35,9 @@ class NoaaReport:
     and compares to the first one.
         
     Arguments:
-        year {str or int} -- [description]
-        month {str or int} -- [description]
-        day {str or int} -- [description]
+        year {str or int} -- The report's year.
+        month {str or int} -- The report's month.
+        day {str or int} -- The report's day.
     """
 
     def __init__(self, year, month, day, path):
@@ -50,7 +50,7 @@ class NoaaReport:
         self.df = None
 
     def __set_filename(self):
-        """[summary]
+        """Creates the file name, given the year, month and day.
         
         Returns:
             str -- The name of the file.
@@ -68,7 +68,7 @@ class NoaaReport:
         """Checks if the data has already been saved.
 
         Returns:
-            boolean -- [description]
+            boolean -- True if data has alredy been read.
         """
 
         if len(self._data):
@@ -79,6 +79,7 @@ class NoaaReport:
     def _read_data(self):
         """Reads the file.
         """
+
         with open(self._filename) as _file:
             for line in _file.readlines():
                 sep = line.split()
@@ -96,10 +97,10 @@ class NoaaReport:
                     del event[1]
 
     def set_Qs(self):
-        """[summary]
+        """Sets the Q column.
         
         Returns:
-            [type] -- [description]
+            {list} -- Contains the value for each line for the column.
         """
 
         self.__check_data()
@@ -116,7 +117,7 @@ class NoaaReport:
         that doesn't contain it.
         
         Returns:
-            [type] -- [description]
+            {list} -- Contains the value for each line for the column.
         """
 
         self.__check_data()
@@ -136,7 +137,7 @@ class NoaaReport:
                                                     - Todd Howard.
         
         Returns:
-            list<st> -- Contains all the particulars and None if there was
+            {list} -- Contains all the particulars and None if there was
                         nothing registered at that moment (I guess that never)
                         happens.
         """
@@ -188,8 +189,8 @@ class NoaaReport:
         check if the number is truly and active region.
         
         Returns:
-            list<str> -- A list containing the regions and None if there is no
-                         region at that time.
+            {list} -- A list containing the regions and None if there is no
+                        region at that time.
         """
 
         self.__check_data()
@@ -225,67 +226,80 @@ class NoaaReport:
         return reg
 
     def set_event(self):
-        """[summary]
+        """Sets the event column.
         
         Returns:
-            list<str> -- [description]
+            {list} -- Contains the value for each line for the column.
         """
 
         self.__check_data()
         return [i[0] for i in self._data]
 
     def set_begin(self):
-        """[summary]
-        
+        """Sets the begin column.
+
         Returns:
-            list<str> -- [description]
+            {list} -- Contains the value for each line for the column.
         """
 
         self.__check_data()
         return [i[1] for i in self._data]
 
     def set_max(self):
-        """[summary]
+        """Sets the max column.
         
         Returns:
-            list<str> -- [description]
+            {list} -- Contains the value for each line for the column.
         """
 
         self.__check_data()
         return [i[2] for i in self._data]
 
     def set_end(self):
-        """[summary]
+        """Sets the end column.
         
         Returns:
-            list<str> -- [description]
+            {list} -- Contains the value for each line for the column.
         """
 
         self.__check_data()
         return [i[3] for i in self._data]
 
     def set_type(self):
-        """[summary]
+        """Sets the type column.
         
         Returns:
-            list<str> -- [description]
+            {list} -- Contains the value for each line for the column.
         """
 
         self.__check_data()
         return [i[6] for i in self._data]
 
     def set_freq(self):
-        """[summary]
+        """Sets the loc/freq column.
         
         Returns:
-            list<str> -- [description]
+            {list} -- Contains the value for each line for the column.
         """
 
         self.__check_data()
         return [i[7] for i in self._data]
 
     @classmethod
-    def get_stuff_from_other_day(cls, year, month, day, path):
+    def get_regions_from_other_day(cls, year, month, day, path):
+        """Gets all the not None regions from the day befora the one
+        being read.
+        
+        Arguments:
+            year {str or int} -- The yesr being read.
+            month {str or int} -- The month being read.
+            day {str or int} -- The day being read.
+            path {str} -- File's path.
+        
+        Returns:
+            {list} -- All the not None active regions from the day before.
+        """
+
         date = dt.date(int(year), int(month), int(day))
         day_before = date - dt.timedelta(days=1)
 
@@ -295,12 +309,12 @@ class NoaaReport:
         return regs
 
     def set_final_data(self):
-        """[summary]
+        """Stores all the data in a dataframe.
         """
 
         self.__check_data()
 
-        regs = NoaaReport.get_stuff_from_other_day(self._year, self._month,
+        regs = NoaaReport.get_regions_from_other_day(self._year, self._month,
                                                     self._day, self._path)
 
         # observatories must be declared first, because it changes the
@@ -333,7 +347,7 @@ class NoaaReport:
             end_time {str} -- event's end time.
 
         Returns:
-            list<str> -- [description]
+            {list} -- All the not None active regions.
         """
 
         start_time = str(start_time)
@@ -349,6 +363,10 @@ class NoaaReport:
             if (self.df["begin"][i] >= start_time
                     and self.df["end"][i] <= end_time):
                 ar.append(self.df["reg"][i])
+
+        ar = [x for x in ar if x is not None]
+        if len(ar) == 0:
+            print("No regions identified.")
 
         return ar
 
