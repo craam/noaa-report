@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 """
 MIT License
 
@@ -155,8 +157,10 @@ class NoaaReport:
                         last_reg = reg
                         break
 
+                # If the last thing in a row is a 4 digit number.
                 if (self._data[index][last_index].isdigit()
                         and len(self._data[index][last_index]) == 4):
+                    # If there are more than 10 things in a row.
                     if len(self._data[index]) > 10:
                         particular = (self._data[index][last_index - 2] + " " +
                                      self._data[index][last_index - 1])
@@ -370,8 +374,41 @@ class NoaaReport:
 
         return ar
 
+    def stuff(self):
+        for i in range(0, len(self.df)):
+            if self.df["particulars"][i].startswith("X"):
+                tstart = self.df["begin"][i]
+        
+        hour_start = int(tstart[0:2])
+        minute_start = int(tstart[2:])
+        tstart = dt.timedelta(hours=hour_start, minutes=minute_start)
+        variation = dt.timedelta(minutes=30)
+        before = str(tstart - variation)
+        hour_before = before[0:2]
+        minute_before = before[3:5]
+
+        after = str(tstart + variation)
+        hour_after = after[0:2]
+        minute_after = after[3:5]
+
+        for i in range(0, len(self.df)):
+            if self.df["type"][i] == "RBR":
+                if self.df["begin"][i][0:2] == hour_before:
+                    if self.df["begin"][i][2:] >= minute_before:
+                        print("\nBegin: {}".format(self.df["begin"][i]))
+                        print("Freq: {}".format(self.df["loc/freq"][i]))
+                        print("Particulars: {}".format(self.df["particulars"][i]))
+                        print("Index: {}".format(i))
+                elif self.df["begin"][i][0:2] == hour_after:
+                    if self.df["begin"][i][2:] <= minute_after:
+                        print("\nBegin: {}".format(self.df["begin"][i]))
+                        print("Freq: {}".format(self.df["loc/freq"][i]))
+                        print("Particulars: {}".format(self.df["particulars"][i]))
+                        print("Index: {}".format(i))
+
 
 if __name__ == "__main__":
     report = NoaaReport(sys.argv[1], sys.argv[2], sys.argv[3],
                         sys.argv[4])
     report.set_final_data()
+    report.stuff()
