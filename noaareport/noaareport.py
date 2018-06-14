@@ -375,10 +375,18 @@ class NoaaReport:
         return ar
 
     def stuff(self):
+        saves = []
         for i in range(0, len(self.df)):
-            if self.df["particulars"][i].startswith("X"):
-                tstart = self.df["begin"][i]
+            if (self.df["type"][i] == "XRA" and (
+                self.df["particulars"][i].startswith("M")
+                    or self.df["particulars"][i].startswith("X"))):
+                if (int(self.df["begin"][i]) < 800
+                        or int(self.df["begin"][i]) > 1800):
+                    continue
+                saves.append(i)
+                # tstart = self.df["begin"][i]
         
+        """
         hour_start = int(tstart[0:2])
         minute_start = int(tstart[2:])
         tstart = dt.timedelta(hours=hour_start, minutes=minute_start)
@@ -390,10 +398,38 @@ class NoaaReport:
         after = str(tstart + variation)
         hour_after = after[0:2]
         minute_after = after[3:5]
+        """
 
+        for sav in saves:
+            if sav+5 > len(self.df["type"]):
+                df_max = (len(self.df["type"])-1)
+                for i in range(sav-5, df_max):
+                    if self.df["type"][i] == "RBR":
+                        print("\nBegin: {}".format(self.df["begin"][i]))
+                        print("Freq: {}".format(self.df["loc/freq"][i]))
+                        print("Particulars: {}".format(self.df["particulars"][i]))
+                        print("Index: {}".format(i))
+
+            if sav > 5:
+                for i in range(sav-5, sav+5):
+                    if self.df["type"][i] == "RBR":
+                        print("\nBegin: {}".format(self.df["begin"][i]))
+                        print("Freq: {}".format(self.df["loc/freq"][i]))
+                        print("Particulars: {}".format(self.df["particulars"][i]))
+                        print("Index: {}".format(i))
+            else:
+                for i in range(0, sav+5):
+                    if self.df["type"][i] == "RBR":
+                        print("\nBegin: {}".format(self.df["begin"][i]))
+                        print("Freq: {}".format(self.df["loc/freq"][i]))
+                        print("Particulars: {}".format(self.df["particulars"][i]))
+                        print("Index: {}".format(i))
+
+
+        """
         for i in range(0, len(self.df)):
             if self.df["type"][i] == "RBR":
-                if self.df["begin"][i][0:2] == hour_before:
+                if self.df["begin"][i][0:2] >= hour_before:
                     if self.df["begin"][i][2:] >= minute_before:
                         print("\nBegin: {}".format(self.df["begin"][i]))
                         print("Freq: {}".format(self.df["loc/freq"][i]))
@@ -405,6 +441,7 @@ class NoaaReport:
                         print("Freq: {}".format(self.df["loc/freq"][i]))
                         print("Particulars: {}".format(self.df["particulars"][i]))
                         print("Index: {}".format(i))
+        """
 
 
 if __name__ == "__main__":
