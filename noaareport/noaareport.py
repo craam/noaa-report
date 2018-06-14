@@ -384,21 +384,6 @@ class NoaaReport:
                         or int(self.df["begin"][i]) > 1800):
                     continue
                 saves.append(i)
-                # tstart = self.df["begin"][i]
-        
-        """
-        hour_start = int(tstart[0:2])
-        minute_start = int(tstart[2:])
-        tstart = dt.timedelta(hours=hour_start, minutes=minute_start)
-        variation = dt.timedelta(minutes=30)
-        before = str(tstart - variation)
-        hour_before = before[0:2]
-        minute_before = before[3:5]
-
-        after = str(tstart + variation)
-        hour_after = after[0:2]
-        minute_after = after[3:5]
-        """
 
         for sav in saves:
             if sav+5 > len(self.df["type"]):
@@ -424,24 +409,6 @@ class NoaaReport:
                         print("Freq: {}".format(self.df["loc/freq"][i]))
                         print("Particulars: {}".format(self.df["particulars"][i]))
                         print("Index: {}".format(i))
-
-
-        """
-        for i in range(0, len(self.df)):
-            if self.df["type"][i] == "RBR":
-                if self.df["begin"][i][0:2] >= hour_before:
-                    if self.df["begin"][i][2:] >= minute_before:
-                        print("\nBegin: {}".format(self.df["begin"][i]))
-                        print("Freq: {}".format(self.df["loc/freq"][i]))
-                        print("Particulars: {}".format(self.df["particulars"][i]))
-                        print("Index: {}".format(i))
-                elif self.df["begin"][i][0:2] == hour_after:
-                    if self.df["begin"][i][2:] <= minute_after:
-                        print("\nBegin: {}".format(self.df["begin"][i]))
-                        print("Freq: {}".format(self.df["loc/freq"][i]))
-                        print("Particulars: {}".format(self.df["particulars"][i]))
-                        print("Index: {}".format(i))
-        """
 
 
 if __name__ == "__main__":
