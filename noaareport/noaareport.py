@@ -35,7 +35,7 @@ class NoaaReport:
 
     Reads the last active region on the file from the previous day,
     and compares to the first one.
-        
+
     Arguments:
         year {str or int} -- The report's year.
         month {str or int} -- The report's month.
@@ -53,7 +53,7 @@ class NoaaReport:
 
     def __set_filename(self):
         """Creates the file name, given the year, month and day.
-        
+
         Returns:
             str -- The name of the file.
         """
@@ -100,7 +100,7 @@ class NoaaReport:
 
     def set_Qs(self):
         """Sets the Q column.
-        
+
         Returns:
             {list} -- Contains the value for each line for the column.
         """
@@ -117,7 +117,7 @@ class NoaaReport:
     def set_observatories(self):
         """Set the obs column, and deletes the line (not on the actual file)
         that doesn't contain it.
-        
+
         Returns:
             {list} -- Contains the value for each line for the column.
         """
@@ -137,7 +137,7 @@ class NoaaReport:
     def set_particulars(self):
         """I don't know how i made this work. But, "it just works"
                                                     - Todd Howard.
-        
+
         Returns:
             {list} -- Contains all the particulars and None if there was
                         nothing registered at that moment (I guess that never)
@@ -191,7 +191,7 @@ class NoaaReport:
         or not.
         The function gets the active regions from the other day to compare and
         check if the number is truly and active region.
-        
+
         Returns:
             {list} -- A list containing the regions and None if there is no
                         region at that time.
@@ -231,7 +231,7 @@ class NoaaReport:
 
     def set_event(self):
         """Sets the event column.
-        
+
         Returns:
             {list} -- Contains the value for each line for the column.
         """
@@ -251,7 +251,7 @@ class NoaaReport:
 
     def set_max(self):
         """Sets the max column.
-        
+
         Returns:
             {list} -- Contains the value for each line for the column.
         """
@@ -261,7 +261,7 @@ class NoaaReport:
 
     def set_end(self):
         """Sets the end column.
-        
+
         Returns:
             {list} -- Contains the value for each line for the column.
         """
@@ -271,7 +271,7 @@ class NoaaReport:
 
     def set_type(self):
         """Sets the type column.
-        
+
         Returns:
             {list} -- Contains the value for each line for the column.
         """
@@ -281,7 +281,7 @@ class NoaaReport:
 
     def set_freq(self):
         """Sets the loc/freq column.
-        
+
         Returns:
             {list} -- Contains the value for each line for the column.
         """
@@ -293,13 +293,13 @@ class NoaaReport:
     def get_regions_from_other_day(cls, year, month, day, path):
         """Gets all the not None regions from the day befora the one
         being read.
-        
+
         Arguments:
             year {str or int} -- The yesr being read.
             month {str or int} -- The month being read.
             day {str or int} -- The day being read.
             path {str} -- File's path.
-        
+
         Returns:
             {list} -- All the not None active regions from the day before.
         """
@@ -339,13 +339,13 @@ class NoaaReport:
         columns = ["event", "begin", "max",
                    "end", "obs", "Q", "type",
                    "loc/freq", "particulars", "reg"]
-        
+
         self.df = pd.DataFrame(final_data, columns=columns)
         print(self.df)
 
     def get_active_region(self, start_time, end_time):
         """Returns registered active region of a certain time range.
-        
+
         Arguments:
             start_time {str} -- event's start time.
             end_time {str} -- event's end time.
@@ -364,8 +364,8 @@ class NoaaReport:
             if self.df["end"][i] < "10":
                 continue
 
-            if (self.df["begin"][i] >= start_time
-                    and self.df["end"][i] <= end_time):
+            if (int(self.df["begin"][i]) >= int(start_time)
+                    and int(self.df["end"][i]) <= int(end_time)):
                 ar.append(self.df["reg"][i])
 
         ar = [x for x in ar if x is not None]
@@ -415,4 +415,5 @@ if __name__ == "__main__":
     report = NoaaReport(sys.argv[1], sys.argv[2], sys.argv[3],
                         sys.argv[4])
     report.set_final_data()
-    report.stuff()
+    ars = report.get_active_region(sys.argv[5], sys.argv[6])
+    print(ars)
