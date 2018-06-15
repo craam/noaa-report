@@ -55,7 +55,7 @@ class NoaaReport:
         """Creates the file name, given the year, month and day.
 
         Returns:
-            str -- The name of the file.
+            {str} -- The name of the file.
         """
 
         if len(self._month) == 1:
@@ -70,7 +70,7 @@ class NoaaReport:
         """Checks if the data has already been saved.
 
         Returns:
-            boolean -- True if data has alredy been read.
+            {bool} -- True if data has alredy been read.
         """
 
         if len(self._data):
@@ -153,7 +153,7 @@ class NoaaReport:
                 last_index = len(self._data[index]) - 1
                 last_reg = ""
                 for reg in regs:
-                    if reg != None:
+                    if reg is not None:
                         last_reg = reg
                         break
 
@@ -163,7 +163,7 @@ class NoaaReport:
                     # If there are more than 10 things in a row.
                     if len(self._data[index]) > 10:
                         particular = (self._data[index][last_index - 2] + " " +
-                                     self._data[index][last_index - 1])
+                                      self._data[index][last_index - 1])
                     elif (int(self._data[index][last_index])+25 <= int(last_reg)
                             and int(self._data[index][last_index])-25 >= int(last_reg)):
                         particular = self._data[index][last_index]
@@ -355,17 +355,41 @@ class NoaaReport:
         """
 
         start_time = str(start_time)
-        end_time= str(end_time)
+        end_time = str(end_time)
         start_time = start_time[11:16].replace(":", "")
+        start_time = dt.timedelta(hours=int(start_time[0:2]),
+                                  minutes=int(start_time[2:]))
         end_time = end_time[11:16].replace(":", "")
+        end_time = dt.timedelta(hours=int(end_time[0:2]),
+                                minutes=int(end_time[2:]))
         ar = []
 
         for i in range(0, len(self.df)):
-            if self.df["end"][i] < "10":
+            
+            if not self.df["begin"][i][0].isnumeric():
+                self.df["begin"][i] = self.df["begin"][i][1:]
+            if not self.df["max"][i][0].isnumeric():
+                self.df["max"][i] = self.df["max"][i][1:]
+            if not self.df["end"][i][0].isnumeric():
+                self.df["end"][i] = self.df["end"][i][1:]
+
+            begin = dt.timedelta(hours=int(self.df["begin"][i][0:2]),
+                                 minutes=int(self.df["begin"][i][2:]))
+
+            end = dt.timedelta(hours=int(self.df["end"][i][0:2]),
+                               minutes=int(self.df["end"][i][2:]))
+            
+            eleven_oclock = dt.timedelta(hours=23, minutes=00)
+            if begin >= eleven_oclock:
                 continue
 
-            if (int(self.df["begin"][i]) >= int(start_time)
-                    and int(self.df["end"][i]) <= int(end_time)):
+            if begin >= start_time and end <= end_time:
+                print("\nBegin: {}".format(self.df["begin"][i]))
+                print("Max: {}".format(self.df["max"][i]))
+                print("End: {}".format(self.df["end"][i]))
+                print("Loc/Freq: {}".format(self.df["loc/freq"][i]))
+                print("Region: {}".format(self.df["reg"][i]))
+
                 ar.append(self.df["reg"][i])
 
         ar = [x for x in ar if x is not None]
