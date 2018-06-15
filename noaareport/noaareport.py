@@ -383,6 +383,9 @@ class NoaaReport:
             if begin >= eleven_oclock:
                 continue
 
+            # print(begin >= start_time)
+            print(end)
+
             if begin >= start_time and end <= end_time:
                 print("\nBegin: {}".format(self.df["begin"][i]))
                 print("Max: {}".format(self.df["max"][i]))
