@@ -380,16 +380,15 @@ class NoaaReport:
                                minutes=int(self.df["end"][i][2:]))
             
             eleven_oclock = dt.timedelta(hours=23, minutes=00)
+            fifteen_minutes = dt.timedelta(minutes=15)
             if begin >= eleven_oclock:
                 continue
 
-            # print(begin >= start_time)
-            print(end)
-
-            if begin >= start_time and end <= end_time:
+            if begin >= start_time and end <= end_time + fifteen_minutes:
                 print("\nBegin: {}".format(self.df["begin"][i]))
                 print("Max: {}".format(self.df["max"][i]))
                 print("End: {}".format(self.df["end"][i]))
+                print("Type: {}".format(self.df["type"][i]))
                 print("Loc/Freq: {}".format(self.df["loc/freq"][i]))
                 print("Region: {}".format(self.df["reg"][i]))
 
