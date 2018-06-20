@@ -365,7 +365,7 @@ class NoaaReport:
         ar = []
 
         for i in range(0, len(self.df)):
-            
+
             if not self.df["begin"][i][0].isnumeric():
                 self.df["begin"][i] = self.df["begin"][i][1:]
             if not self.df["max"][i][0].isnumeric():
@@ -378,7 +378,7 @@ class NoaaReport:
 
             end = dt.timedelta(hours=int(self.df["end"][i][0:2]),
                                minutes=int(self.df["end"][i][2:]))
-            
+
             eleven_oclock = dt.timedelta(hours=23, minutes=00)
             fifteen_minutes = dt.timedelta(minutes=15)
             if begin >= eleven_oclock:
