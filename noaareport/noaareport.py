@@ -291,7 +291,7 @@ class NoaaReport:
 
     @classmethod
     def get_regions_from_other_day(cls, year, month, day, path):
-        """Gets all the not None regions from the day befora the one
+        """Gets all the not None regions from the day before the one
         being read.
 
         Arguments:
@@ -373,18 +373,18 @@ class NoaaReport:
             if not self.df["end"][i][0].isnumeric():
                 self.df["end"][i] = self.df["end"][i][1:]
 
-            begin = dt.timedelta(hours=int(self.df["begin"][i][0:2]),
+            event_begin = dt.timedelta(hours=int(self.df["begin"][i][0:2]),
                                  minutes=int(self.df["begin"][i][2:]))
 
-            end = dt.timedelta(hours=int(self.df["end"][i][0:2]),
+            event_end = dt.timedelta(hours=int(self.df["end"][i][0:2]),
                                minutes=int(self.df["end"][i][2:]))
 
             eleven_oclock = dt.timedelta(hours=23, minutes=00)
             fifteen_minutes = dt.timedelta(minutes=15)
-            if begin >= eleven_oclock:
+            if event_begin >= eleven_oclock:
                 continue
 
-            if begin >= start_time and end <= end_time + fifteen_minutes:
+            if event_begin >= start_time and event_end <= end_time + fifteen_minutes:
                 print("\nBegin: {}".format(self.df["begin"][i]))
                 print("Max: {}".format(self.df["max"][i]))
                 print("End: {}".format(self.df["end"][i]))
