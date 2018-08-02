@@ -30,7 +30,7 @@ import sys
 import pandas as pd
 
 
-class NoaaReport:
+class NoaaReport(object):
     """Reads noaa report.
 
     Reads the last active region on the file from the previous day,
