@@ -14,11 +14,11 @@ setup(
     packages=['noaareport'],
     include_package_data=True,
     install_requires=[
-        'pandas'
+        'pandas>=0.21'
     ],
-    classifiers=(
+    classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
-    ),
+    ],
 )

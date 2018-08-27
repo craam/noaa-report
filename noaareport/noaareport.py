@@ -62,6 +62,7 @@ class NoaaReport(object):
             self._month = "0" + self._month
         if len(self._day) == 1:
             self._day = "0" + self._day
+
         filename = self._year + self._month + self._day + "events.txt"
         filename = self._path + filename
         return filename
