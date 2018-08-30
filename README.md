@@ -4,6 +4,6 @@ A library used to read the noaa's solar report. It uses pandas to store the data
 
 ## Installation
 
-```console
+```bash
 pip install noaareport
 ```
