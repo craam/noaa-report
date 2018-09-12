@@ -315,6 +315,9 @@ class NoaaReport(object):
 
     def set_final_data(self):
         """Stores all the data in a dataframe.
+
+        Returns:
+            {pd.DataFrame} - A DataFrame with the data.
         """
 
         self.__check_data()
@@ -342,7 +345,8 @@ class NoaaReport(object):
                    "loc/freq", "particulars", "reg"]
 
         self.df = pd.DataFrame(final_data, columns=columns)
-        print(self.df)
+
+        return self.df
 
     def get_active_region(self, start_time, end_time):
         """Returns registered active region of a certain time range.
