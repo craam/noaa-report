@@ -80,8 +80,7 @@ class NoaaReport(object):
         self._read_data()
 
     def _read_data(self):
-        """Reads the file.
-        """
+        """Reads the file. """
 
         with open(self._filename) as _file:
             for line in _file.readlines():
@@ -136,8 +135,7 @@ class NoaaReport(object):
         return observatories
 
     def set_particulars(self):
-        """I don't know how i made this work. But, "it just works"
-                                                    - Todd Howard.
+        """I don't know how i made this work. But, "it just works".
 
         Returns:
             {list} -- Contains all the particulars and None if there was
@@ -173,7 +171,7 @@ class NoaaReport(object):
                 else:
                     if len(self._data[index]) > 9:
                         particular = (self._data[index][last_index - 1] + " " +
-                                     self._data[index][last_index])
+                                      self._data[index][last_index])
                     else:
                         particular = self._data[index][last_index]
 
@@ -208,7 +206,7 @@ class NoaaReport(object):
                     if len(valid_regions) == 0 and info[last_index] != "0000":
                         if valid_regions_day_before is not None:
                             if (int(info[last_index]) >= int(valid_regions_day_before[-1])-25
-                            and int(info[last_index]) <= int(valid_regions_day_before[-1])+25):
+                                    and int(info[last_index]) <= int(valid_regions_day_before[-1])+25):
                                 reg.append(info[last_index])
                                 valid_regions.append(info[last_index])
                             else:
@@ -323,9 +321,9 @@ class NoaaReport(object):
         self.__check_data()
 
         regs = NoaaReport.get_regions_from_other_day(self._year, self._month,
-                                                    self._day, self._path)
+                                                     self._day, self._path)
 
-        # observatories must be declared first, because it changes the
+        # Observatories must be declared first, because it changes the
         # data list.
         final_data = {
             "obs": self.set_observatories(),
@@ -379,10 +377,10 @@ class NoaaReport(object):
                 self.df["end"][i] = self.df["end"][i][1:]
 
             event_begin = dt.timedelta(hours=int(self.df["begin"][i][0:2]),
-                                 minutes=int(self.df["begin"][i][2:]))
+                                       minutes=int(self.df["begin"][i][2:]))
 
             event_end = dt.timedelta(hours=int(self.df["end"][i][0:2]),
-                               minutes=int(self.df["end"][i][2:]))
+                                     minutes=int(self.df["end"][i][2:]))
 
             eleven_oclock = dt.timedelta(hours=23, minutes=00)
             fifteen_minutes = dt.timedelta(minutes=15)
@@ -423,7 +421,8 @@ class NoaaReport(object):
                     if self.df["type"][i] == "RBR":
                         print("\nBegin: {}".format(self.df["begin"][i]))
                         print("Freq: {}".format(self.df["loc/freq"][i]))
-                        print("Particulars: {}".format(self.df["particulars"][i]))
+                        print("Particulars: {}".format(
+                            self.df["particulars"][i]))
                         print("Index: {}".format(i))
 
             if sav > 5:
@@ -431,14 +430,16 @@ class NoaaReport(object):
                     if self.df["type"][i] == "RBR":
                         print("\nBegin: {}".format(self.df["begin"][i]))
                         print("Freq: {}".format(self.df["loc/freq"][i]))
-                        print("Particulars: {}".format(self.df["particulars"][i]))
+                        print("Particulars: {}".format(
+                            self.df["particulars"][i]))
                         print("Index: {}".format(i))
             else:
                 for i in range(0, sav+5):
                     if self.df["type"][i] == "RBR":
                         print("\nBegin: {}".format(self.df["begin"][i]))
                         print("Freq: {}".format(self.df["loc/freq"][i]))
-                        print("Particulars: {}".format(self.df["particulars"][i]))
+                        print("Particulars: {}".format(
+                            self.df["particulars"][i]))
                         print("Index: {}".format(i))
 
 
