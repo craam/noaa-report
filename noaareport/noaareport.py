@@ -441,12 +441,3 @@ class NoaaReport(object):
                         print("Particulars: {}".format(
                             self.df["particulars"][i]))
                         print("Index: {}".format(i))
-
-
-if __name__ == "__main__":
-    report = NoaaReport(sys.argv[1], sys.argv[2], sys.argv[3],
-                        sys.argv[4])
-    report.set_final_data()
-    if len(sys.argv) > 5:
-        ars = report.get_active_region(sys.argv[5], sys.argv[6])
-        print(ars)
