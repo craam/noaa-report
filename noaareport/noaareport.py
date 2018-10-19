@@ -115,8 +115,7 @@ class NoaaReport(object):
         return Qs
 
     def set_observatories(self):
-        """Set the obs column, and deletes the line (not on the actual file)
-        that doesn't contain it.
+        """Set the obs column, and deletes the line that doesn't contain it.
 
         Returns:
             {list} -- Contains the value for each line for the column.
@@ -135,12 +134,11 @@ class NoaaReport(object):
         return observatories
 
     def set_particulars(self):
-        """I don't know how i made this work. But, "it just works".
+        """Reads the particulars column.
 
         Returns:
             {list} -- Contains all the particulars and None if there was
-                        nothing registered at that moment (I guess that never)
-                        happens.
+                        nothing registered at that moment happens.
         """
 
         self.__check_data()
