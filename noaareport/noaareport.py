@@ -292,7 +292,7 @@ class NoaaReport(object):
         being read.
 
         Arguments:
-            year {str or int} -- The yesr being read.
+            year {str or int} -- The year being read.
             month {str or int} -- The month being read.
             day {str or int} -- The day being read.
             path {str} -- File's path.
