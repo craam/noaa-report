@@ -4,6 +4,16 @@ A library used to read the noaa's solar report. It uses pandas to store the data
 
 ## Installation
 
+### Python package
+
 ```bash
 pip install noaareport
 ```
+
+### CLI tool
+
+```bash
+./install_cli ~/Path/To/Report/Files/
+```
+
+In your reports folder the folders for each year must be set as in noaa's website. E.g: 2014 -> 2014_events/
