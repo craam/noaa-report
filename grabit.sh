@@ -1,4 +1,7 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
+
+mkdir -p reports
+cd reports
 
 for i in $(seq 1996 2017); do
     year="$i"
