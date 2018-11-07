@@ -6,6 +6,12 @@ import sys
 import pandas as pd
 
 
+class NoEventReports(Exception):
+    """No events reported in this day. """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
 class NoaaReport(object):
     """Reads noaa report.
 
@@ -58,16 +64,26 @@ class NoaaReport(object):
         if len(self._data):
             return True
 
-        self._read_data()
+        try:
+            self._read_data()
+        except NoEventReports:
+            return None
 
     def _read_data(self):
-        """Reads the file. """
+        """Reads the file.
+
+        :raises NoEventReports: There are no events in this day.
+        """
 
         with open(self._filename) as _file:
             for line in _file.readlines():
                 sep = line.split()
 
+
                 try:
+                    if sep[0] == "NO":
+                        raise NoEventReports("No events reported")
+
                     if (not sep[0].startswith(":") and
                             not sep[0].startswith("#")):
                         self._data.append(sep)
@@ -185,25 +201,29 @@ class NoaaReport(object):
         for info in self._data:
             try:
                 last_index = len(info) - 1
-                if info[last_index].isdigit() and len(info[last_index]) == 4:
-                    if len(valid_regions) == 0 and info[last_index] != "0000":
-                        if valid_regions_day_before is not None:
-                            if (int(info[last_index]) >= int(valid_regions_day_before[-1])-25
-                                    and int(info[last_index]) <= int(valid_regions_day_before[-1])+25):
-                                reg.append(info[last_index])
-                                valid_regions.append(info[last_index])
-                            else:
-                                reg.append(None)
-                        else:
-                            reg.append(info[last_index])
-                            valid_regions.append(info[last_index])
-                    elif (int(info[last_index]) >= int(valid_regions[-1]) - 25
-                            and int(info[last_index]) <= int(valid_regions[-1]) + 25
-                            and info[last_index] != "0000"):
-                        reg.append(info[last_index])
-                        valid_regions.append(info[last_index])
-                    else:
-                        reg.append(None)
+                if not info[last_index].isdigit() and len(info[last_index]) != 4:
+                    reg.append(None)
+                    continue
+
+                if not len(valid_regions) == 0 and info[last_index] == "0000":
+                    reg.append(None)
+                    continue
+                elif (int(info[last_index]) >= int(valid_regions[-1]) - 25
+                        and int(info[last_index]) <= int(valid_regions[-1]) + 25
+                        and info[last_index] != "0000"):
+                    reg.append(info[last_index])
+                    valid_regions.append(info[last_index])
+                    continue
+
+                if valid_regions_day_before is None:
+                    reg.append(info[last_index])
+                    valid_regions.append(info[last_index])
+                    continue
+
+                if (int(info[last_index]) >= int(valid_regions_day_before[-1])-25
+                        and int(info[last_index]) <= int(valid_regions_day_before[-1])+25):
+                    reg.append(info[last_index])
+                    valid_regions.append(info[last_index])
                 else:
                     reg.append(None)
             except IndexError:
@@ -312,7 +332,8 @@ class NoaaReport(object):
 
         """
 
-        self.__check_data()
+        if self.__check_data() is None:
+            return pd.DataFrame(["No events"], [0])
 
         regs = NoaaReport.get_regions_from_other_day(self._year, self._month,
                                                      self._day, self._path)
