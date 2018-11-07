@@ -1,27 +1,3 @@
-"""
-MIT License
-
-Copyright (c) 2018 Edison Neto
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-"""
-
 from __future__ import print_function
 
 import datetime as dt
@@ -36,10 +12,13 @@ class NoaaReport(object):
     Reads the last active region on the file from the previous day,
     and compares to the first one.
 
-    Arguments:
-        year {str or int} -- The report's year.
-        month {str or int} -- The report's month.
-        day {str or int} -- The report's day.
+    :param year: The report's year.
+    :type year: str or int
+    :param month: The report's month.
+    :type month: str or int
+    :param day: The report's day.
+    :type day: str or int
+
     """
 
     def __init__(self, year, month, day, path):
@@ -52,10 +31,11 @@ class NoaaReport(object):
         self.df = None
 
     def __set_filename(self):
-        """Creates the file name, given the year, month and day.
+        """Creates the filename, given the year, month and day.
 
-        Returns:
-            {str} -- The name of the file.
+        :returns: The filename.
+        :rtype: str
+
         """
 
         if len(self._month) == 1:
@@ -70,8 +50,9 @@ class NoaaReport(object):
     def __check_data(self):
         """Checks if the data has already been saved.
 
-        Returns:
-            {bool} -- True if data has alredy been read.
+        :returns: True if data has alredy been read.
+        :rtype: bool
+
         """
 
         if len(self._data):
@@ -101,8 +82,9 @@ class NoaaReport(object):
     def set_Qs(self):
         """Sets the Q column.
 
-        Returns:
-            {list} -- Contains the value for each line for the column.
+        :returns: Contains the value for each line for the column.
+        :rtype: list
+
         """
 
         self.__check_data()
@@ -117,8 +99,9 @@ class NoaaReport(object):
     def set_observatories(self):
         """Set the obs column, and deletes the line that doesn't contain it.
 
-        Returns:
-            {list} -- Contains the value for each line for the column.
+        :returns: Contains the value for each line for the column.
+        :rtype: list
+
         """
 
         self.__check_data()
@@ -136,9 +119,10 @@ class NoaaReport(object):
     def set_particulars(self):
         """Reads the particulars column.
 
-        Returns:
-            {list} -- Contains all the particulars and None if there was
-                        nothing registered at that moment happens.
+        :returns: Contains all the particulars and None if there was nothing
+                  registered at that moment happens.
+        :rtype: list
+
         """
 
         self.__check_data()
@@ -189,9 +173,10 @@ class NoaaReport(object):
         The function gets the active regions from the other day to compare and
         check if the number is truly and active region.
 
-        Returns:
-            {list} -- A list containing the regions and None if there is no
-                        region at that time.
+        :returns: A list containing the regions and None if there is no
+                  region at that time.
+        :rtype: list
+
         """
 
         self.__check_data()
@@ -229,8 +214,9 @@ class NoaaReport(object):
     def set_event(self):
         """Sets the event column.
 
-        Returns:
-            {list} -- Contains the value for each line for the column.
+        :returns: Contains the value for each line for the column.
+        :rtype: list
+
         """
 
         self.__check_data()
@@ -239,8 +225,9 @@ class NoaaReport(object):
     def set_begin(self):
         """Sets the begin column.
 
-        Returns:
-            {list} -- Contains the value for each line for the column.
+        :returns: Contains the value for each line for the column.
+        :rtype: list
+
         """
 
         self.__check_data()
@@ -249,8 +236,9 @@ class NoaaReport(object):
     def set_max(self):
         """Sets the max column.
 
-        Returns:
-            {list} -- Contains the value for each line for the column.
+        :returns: Contains the value for each line for the column.
+        :rtype: list
+
         """
 
         self.__check_data()
@@ -259,8 +247,9 @@ class NoaaReport(object):
     def set_end(self):
         """Sets the end column.
 
-        Returns:
-            {list} -- Contains the value for each line for the column.
+        :returns: Contains the value for each line for the column.
+        :rtype: list
+
         """
 
         self.__check_data()
@@ -269,8 +258,9 @@ class NoaaReport(object):
     def set_type(self):
         """Sets the type column.
 
-        Returns:
-            {list} -- Contains the value for each line for the column.
+        :returns: Contains the value for each line for the column.
+        :rtype: list
+
         """
 
         self.__check_data()
@@ -279,8 +269,9 @@ class NoaaReport(object):
     def set_freq(self):
         """Sets the loc/freq column.
 
-        Returns:
-            {list} -- Contains the value for each line for the column.
+        :returns: Contains the value for each line for the column.
+        :rtype: list
+
         """
 
         self.__check_data()
@@ -291,14 +282,18 @@ class NoaaReport(object):
         """Gets all the not None regions from the day before the one
         being read.
 
-        Arguments:
-            year {str or int} -- The year being read.
-            month {str or int} -- The month being read.
-            day {str or int} -- The day being read.
-            path {str} -- File's path.
+        :param year: The year being read.
+        :type year: str or int
+        :param month: The month being read.
+        :type month: str or int
+        :param day: The day being read.
+        :type day: str or int
+        :param path: File's path.
+        :type path: str
 
-        Returns:
-            {list} -- All the not None active regions from the day before.
+        :returns: All the not None active regions from the day before.
+        :rtype: list
+
         """
 
         date = dt.date(int(year), int(month), int(day))
@@ -312,8 +307,9 @@ class NoaaReport(object):
     def set_final_data(self):
         """Stores all the data in a dataframe.
 
-        Returns:
-            {pd.DataFrame} - A DataFrame with the data.
+        :returns: A DataFrame with the data.
+        :rtype: pandas.DataFrame
+
         """
 
         self.__check_data()
@@ -347,12 +343,13 @@ class NoaaReport(object):
     def get_active_region(self, start_time, end_time):
         """Returns registered active region of a certain time range.
 
-        Arguments:
-            start_time {str} -- event's start time.
-            end_time {str} -- event's end time.
+        :param start_time: Event's start time.
+        :type start_time: str
+        :param end_time: Event's end time.
+        :type end_time: str
 
-        Returns:
-            {list} -- All the not None active regions.
+        :returns: All the not None active regions.
+        :rtype: list
         """
 
         start_time = str(start_time)
