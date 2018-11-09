@@ -11,7 +11,7 @@ Welcome to NoaaReport's documentation!
    :caption: Contents:
 
 Documentation
-==================
+=============
 
 .. automodule:: noaareport.noaareport
     :members:
