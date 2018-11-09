@@ -18,12 +18,18 @@ class NoaaReport(object):
     Reads the last active region on the file from the previous day,
     and compares to the first one.
 
-    :param year: The report's year.
-    :type year: str or int
-    :param month: The report's month.
-    :type month: str or int
-    :param day: The report's day.
-    :type day: str or int
+    Attributes
+    ----------
+    year: str or int
+        The report's year.
+    month: stro or int
+        The report's month.
+    day: str ot int
+        The report's day.
+    path: str
+        The path to the report file.
+    filename: str
+        Filename set for the selected day
 
     """
 
@@ -39,8 +45,10 @@ class NoaaReport(object):
     def __set_filename(self):
         """Creates the filename, given the year, month and day.
 
-        :returns: The filename.
-        :rtype: str
+        Returns
+        -------
+        str
+            The filename.
 
         """
 
@@ -56,8 +64,10 @@ class NoaaReport(object):
     def __check_data(self):
         """Checks if the data has already been saved.
 
-        :returns: True if data has alredy been read.
-        :rtype: bool
+        Returns
+        -------
+        bool
+            True if data has alredy been read.
 
         """
 
@@ -72,13 +82,15 @@ class NoaaReport(object):
     def _read_data(self):
         """Reads the file.
 
-        :raises NoEventReports: There are no events in this day.
+        Raises
+        ------
+        NoEventReports
+            There are no events in this day.
         """
 
         with open(self._filename) as _file:
             for line in _file.readlines():
                 sep = line.split()
-
 
                 try:
                     if sep[0] == "NO":
@@ -98,8 +110,10 @@ class NoaaReport(object):
     def set_Qs(self):
         """Sets the Q column.
 
-        :returns: Contains the value for each line for the column.
-        :rtype: list
+        Returns
+        -------
+        list
+            Contains the value for each line for the column.
 
         """
 
@@ -115,8 +129,10 @@ class NoaaReport(object):
     def set_observatories(self):
         """Set the obs column, and deletes the line that doesn't contain it.
 
-        :returns: Contains the value for each line for the column.
-        :rtype: list
+        Returns
+        -------
+        list
+            Contains the value for each line for the column.
 
         """
 
@@ -135,9 +151,11 @@ class NoaaReport(object):
     def set_particulars(self):
         """Reads the particulars column.
 
-        :returns: Contains all the particulars and None if there was nothing
-                  registered at that moment happens.
-        :rtype: list
+        Returns
+        -------
+        list
+            Contains all the particulars and None if there was nothing
+            registered at that moment happens.
 
         """
 
@@ -182,16 +200,19 @@ class NoaaReport(object):
         return particulars
 
     def set_regions(self, valid_regions_day_before=None):
-        """Get the regions from the file.
+        """Get the reg column from the file.
+
         The region to be valid must be a 4 digit number.
         There's a range of 25 to check if the other number will be a region,
         or not.
-        The function gets the active regions from the other day to compare and
-        check if the number is truly and active region.
+        The function gets the active regions from the other day in order to
+        compare and check if the number is truly and active region.
 
-        :returns: A list containing the regions and None if there is no
-                  region at that time.
-        :rtype: list
+        Returns
+        -------
+        list
+            A list containing the regions and None if there is no
+            region at that time.
 
         """
 
@@ -234,8 +255,10 @@ class NoaaReport(object):
     def set_event(self):
         """Sets the event column.
 
-        :returns: Contains the value for each line for the column.
-        :rtype: list
+        Returns
+        -------
+        list
+            Contains the value for each line for the column.
 
         """
 
@@ -245,8 +268,10 @@ class NoaaReport(object):
     def set_begin(self):
         """Sets the begin column.
 
-        :returns: Contains the value for each line for the column.
-        :rtype: list
+        Returns
+        -------
+        list
+            Contains the value for each line for the column.
 
         """
 
@@ -256,8 +281,10 @@ class NoaaReport(object):
     def set_max(self):
         """Sets the max column.
 
-        :returns: Contains the value for each line for the column.
-        :rtype: list
+        Returns
+        -------
+        list
+            Contains the value for each line for the column.
 
         """
 
@@ -267,8 +294,10 @@ class NoaaReport(object):
     def set_end(self):
         """Sets the end column.
 
-        :returns: Contains the value for each line for the column.
-        :rtype: list
+        Returns
+        -------
+        list
+            Contains the value for each line for the column.
 
         """
 
@@ -278,8 +307,10 @@ class NoaaReport(object):
     def set_type(self):
         """Sets the type column.
 
-        :returns: Contains the value for each line for the column.
-        :rtype: list
+        Returns
+        -------
+        list
+            Contains the value for each line for the column.
 
         """
 
@@ -289,8 +320,10 @@ class NoaaReport(object):
     def set_freq(self):
         """Sets the loc/freq column.
 
-        :returns: Contains the value for each line for the column.
-        :rtype: list
+        Returns
+        -------
+        list
+            Contains the value for each line for the column.
 
         """
 
@@ -302,17 +335,21 @@ class NoaaReport(object):
         """Gets all the not None regions from the day before the one
         being read.
 
-        :param year: The year being read.
-        :type year: str or int
-        :param month: The month being read.
-        :type month: str or int
-        :param day: The day being read.
-        :type day: str or int
-        :param path: File's path.
-        :type path: str
+        Parameters
+        ----------
+        year: str or int
+            The year being read.
+        month: str or int
+            The month being read.
+        day: str or int
+            The day being read.
+        path: str
+            The path to the report file.
 
-        :returns: All the not None active regions from the day before.
-        :rtype: list
+        Returns
+        -------
+        list
+            All the not None active regions from the day before.
 
         """
 
@@ -327,8 +364,10 @@ class NoaaReport(object):
     def set_final_data(self):
         """Stores all the data in a dataframe.
 
-        :returns: A DataFrame with the data.
-        :rtype: pandas.DataFrame
+        Returns
+        -------
+        pandas.DatFrame
+            A DataFrame with the data.
 
         """
 
@@ -364,13 +403,18 @@ class NoaaReport(object):
     def get_active_region(self, start_time, end_time):
         """Returns registered active region of a certain time range.
 
-        :param start_time: Event's start time.
-        :type start_time: str
-        :param end_time: Event's end time.
-        :type end_time: str
+        Parameters
+        ----------
+        start_time: str
+            Event's start time.
+        end_time: str
+            Event's end time.
 
-        :returns: All the not None active regions.
-        :rtype: list
+        Returns
+        -------
+        list
+            All the not None active regions.
+
         """
 
         start_time = str(start_time)
@@ -403,7 +447,8 @@ class NoaaReport(object):
             if event_begin >= eleven_oclock:
                 continue
 
-            if event_begin >= start_time and event_end <= end_time + fifteen_minutes:
+            if (event_begin >= start_time and
+                    event_end <= end_time + fifteen_minutes):
                 print("\nBegin: {}".format(self.df["begin"][i]))
                 print("Max: {}".format(self.df["max"][i]))
                 print("End: {}".format(self.df["end"][i]))
