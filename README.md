@@ -16,4 +16,4 @@ pip install noaareport
 ./install_cli ~/Path/To/Report/Files/
 ```
 
-In your reports folder the folders for each year must be set as in noaa's website. E.g: 2014 -> 2014_events/. You can use the grabit.sh script to download all the files from 1996 to 2017.
+In your reports folder the folders for each year must be set as in noaa's website. E.g: 2014 -> 2014_events/. You can use the grabit.sh script to download all the files from 1996 to 2018.
