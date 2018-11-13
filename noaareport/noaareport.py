@@ -1,7 +1,6 @@
 from __future__ import print_function
 
 import datetime as dt
-import sys
 
 import pandas as pd
 
@@ -76,6 +75,7 @@ class NoaaReport(object):
 
         try:
             self._read_data()
+            return False
         except NoEventReports:
             return None
 
@@ -93,11 +93,10 @@ class NoaaReport(object):
                 sep = line.split()
 
                 try:
-                    if sep[0] == "NO":
-                        raise NoEventReports("No events reported")
-
                     if (not sep[0].startswith(":") and
                             not sep[0].startswith("#")):
+                        if sep[0] == "NO":
+                            raise NoEventReports("No events reported")
                         self._data.append(sep)
                 except IndexError:
                     pass
@@ -167,15 +166,17 @@ class NoaaReport(object):
             try:
                 last_index = len(self._data[index]) - 1
                 last_reg = ""
+
+                print(regs)
                 for reg in regs:
                     if reg is not None:
                         last_reg = reg
                         break
 
-                # If the last thing in a row is a 4 digit number.
+                # If the last column in a row is a 4 digit number.
                 if (self._data[index][last_index].isdigit()
                         and len(self._data[index][last_index]) == 4):
-                    # If there are more than 10 things in a row.
+                    # If there are more than 10 columns in a row.
                     if len(self._data[index]) > 10:
                         particular = (self._data[index][last_index - 2] + " " +
                                       self._data[index][last_index - 1])
@@ -226,6 +227,7 @@ class NoaaReport(object):
                     reg.append(None)
                     continue
 
+                print("valid regions-1:", int(valid_regions[-1]))
                 if not len(valid_regions) == 0 and info[last_index] == "0000":
                     reg.append(None)
                     continue
