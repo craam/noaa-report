@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import os
 import datetime as dt
 
 import pandas as pd
@@ -53,11 +54,11 @@ class NoaaReport(object):
 
         if len(self._month) == 1:
             self._month = "0" + self._month
+
         if len(self._day) == 1:
             self._day = "0" + self._day
 
         filename = self._year + self._month + self._day + "events.txt"
-        filename = self._path + filename
         return filename
 
     def __check_data(self):
@@ -68,33 +69,35 @@ class NoaaReport(object):
         bool
             True if data has alredy been read.
 
+        Raises
+        ------
+        NoEventReports
+            There are no events in this day.
+
         """
 
         if len(self._data):
             return True
 
-        try:
-            self._read_data()
-            return False
-        except NoEventReports:
-            return None
+        self.__read_file()
+        return False
 
-    def _read_data(self):
+    def __read_file(self):
         """Reads the file.
 
         Raises
         ------
         NoEventReports
             There are no events in this day.
+
         """
 
-        with open(self._filename) as _file:
+        with open(os.path.join(self._path, self._filename)) as _file:
             for line in _file.readlines():
                 sep = line.split()
 
                 try:
-                    if (not sep[0].startswith(":") and
-                            not sep[0].startswith("#")):
+                    if not (sep[0].startswith(":") or sep[0].startswith("#")):
                         if sep[0] == "NO":
                             raise NoEventReports("No events reported")
                         self._data.append(sep)
@@ -105,154 +108,6 @@ class NoaaReport(object):
                 if event[1] == "+":
                     event[0] += " +"
                     del event[1]
-
-    def set_Qs(self):
-        """Sets the Q column.
-
-        Returns
-        -------
-        list
-            Contains the value for each line for the column.
-
-        """
-
-        self.__check_data()
-        Qs = []
-        for info in self._data:
-            if len(info[5]) == 1:
-                Qs.append(info[5])
-            else:
-                Qs.append(None)
-        return Qs
-
-    def set_observatories(self):
-        """Set the obs column, and deletes the line that doesn't contain it.
-
-        Returns
-        -------
-        list
-            Contains the value for each line for the column.
-
-        """
-
-        self.__check_data()
-        index = 0
-        observatories = []
-        while index < len(self._data):
-            if len(self._data[index][4]) == 3:
-                observatories.append(self._data[index][4])
-                index += 1
-            else:
-                del self._data[index]
-
-        return observatories
-
-    def set_particulars(self):
-        """Reads the particulars column.
-
-        Returns
-        -------
-        list
-            Contains all the particulars and None if there was nothing
-            registered at that moment happens.
-
-        """
-
-        self.__check_data()
-        particulars = []
-        index = 0
-        regs = self.set_regions()
-        while index < len(self._data):
-            try:
-                last_index = len(self._data[index]) - 1
-                last_reg = ""
-
-                print(regs)
-                for reg in regs:
-                    if reg is not None:
-                        last_reg = reg
-                        break
-
-                # If the last column in a row is a 4 digit number.
-                if (self._data[index][last_index].isdigit()
-                        and len(self._data[index][last_index]) == 4):
-                    # If there are more than 10 columns in a row.
-                    if len(self._data[index]) > 10:
-                        particular = (self._data[index][last_index - 2] + " " +
-                                      self._data[index][last_index - 1])
-                    elif (int(self._data[index][last_index])+25 <= int(last_reg)
-                            and int(self._data[index][last_index])-25 >= int(last_reg)):
-                        particular = self._data[index][last_index]
-                    else:
-                        particular = self._data[index][last_index - 1]
-                else:
-                    if len(self._data[index]) > 9:
-                        particular = (self._data[index][last_index - 1] + " " +
-                                      self._data[index][last_index])
-                    else:
-                        particular = self._data[index][last_index]
-
-                particulars.append(particular)
-            except IndexError:
-                particulars.append(None)
-
-            index += 1
-
-        return particulars
-
-    def set_regions(self, valid_regions_day_before=None):
-        """Get the reg column from the file.
-
-        The region to be valid must be a 4 digit number.
-        There's a range of 25 to check if the other number will be a region,
-        or not.
-        The function gets the active regions from the other day in order to
-        compare and check if the number is truly and active region.
-
-        Returns
-        -------
-        list
-            A list containing the regions and None if there is no
-            region at that time.
-
-        """
-
-        self.__check_data()
-        reg = []
-        valid_regions = []
-        for info in self._data:
-            try:
-                last_index = len(info) - 1
-                if not info[last_index].isdigit() and len(info[last_index]) != 4:
-                    reg.append(None)
-                    continue
-
-                print("valid regions-1:", int(valid_regions[-1]))
-                if not len(valid_regions) == 0 and info[last_index] == "0000":
-                    reg.append(None)
-                    continue
-                elif (int(info[last_index]) >= int(valid_regions[-1]) - 25
-                        and int(info[last_index]) <= int(valid_regions[-1]) + 25
-                        and info[last_index] != "0000"):
-                    reg.append(info[last_index])
-                    valid_regions.append(info[last_index])
-                    continue
-
-                if valid_regions_day_before is None:
-                    reg.append(info[last_index])
-                    valid_regions.append(info[last_index])
-                    continue
-
-                if (int(info[last_index]) >= int(valid_regions_day_before[-1])-25
-                        and int(info[last_index]) <= int(valid_regions_day_before[-1])+25):
-                    reg.append(info[last_index])
-                    valid_regions.append(info[last_index])
-                else:
-                    reg.append(None)
-            except IndexError:
-                reg.append(None)
-
-        return reg
 
     def set_event(self):
         """Sets the event column.
@@ -332,6 +187,93 @@ class NoaaReport(object):
         self.__check_data()
         return [i[7] for i in self._data]
 
+    def set_Q(self):
+        """Sets the Q (quality) column.
+
+        Returns
+        -------
+        list
+            Contains the value for each line for the column.
+
+        """
+
+        self.__check_data()
+        Qs = []
+        for info in self._data:
+            if len(info[5]) == 1:
+                Qs.append(info[5])
+            else:
+                Qs.append(None)
+        return Qs
+
+    def set_observatories(self):
+        """Set the obs column, and deletes the line that doesn't contain it.
+
+        Returns
+        -------
+        list
+            Contains the value for each line for the column.
+
+        """
+
+        self.__check_data()
+        index = 0
+        observatories = []
+        # Iterates through the list to check if the observatory has a valid name.
+        while index < len(self._data):
+            if len(self._data[index][4]) == 3:
+                observatories.append(self._data[index][4])
+                index += 1
+            else:
+                del self._data[index]
+
+        return observatories
+
+    def set_particulars(self):
+        """Reads the particulars column.
+
+        Returns
+        -------
+        list
+            Contains all the particulars and None if there was nothing
+            registered at that moment happens.
+
+        """
+
+        self.__check_data()
+        for event in self._data:
+            obs = event[4]
+            if obs == "RBR":
+                pass
+            elif obs == "XRA":
+                pass
+            else:
+                pass
+
+        return particulars
+
+    def set_regions(self, valid_regions_day_before=None):
+        """Get the reg column from the file.
+
+        The region to be valid must be a 4 digit number.
+        There's a range of 25 to check if the other number will be a region,
+        or not.
+        The function gets the active regions from the other day in order to
+        compare and check if the number is truly and active region.
+
+        Returns
+        -------
+        list
+            A list containing the regions and None if there is no
+            region at that time.
+
+        """
+
+        self.__check_data()
+        regions = []
+        return regions
+
+
     @classmethod
     def get_regions_from_other_day(cls, year, month, day, path):
         """Gets all the not None regions from the day before the one
@@ -387,7 +329,7 @@ class NoaaReport(object):
             "begin": self.set_begin(),
             "max": self.set_max(),
             "end": self.set_end(),
-            "Q": self.set_Qs(),
+            "Q": self.set_Q(),
             "type": self.set_type(),
             "loc/freq": self.set_freq(),
             "particulars": self.set_particulars(),
