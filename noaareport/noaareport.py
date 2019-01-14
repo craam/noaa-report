@@ -242,10 +242,10 @@ class NoaaReport(object):
 
         self.__check_data()
         for event in self._data:
-            obs = event[4]
-            if obs == "RBR":
+            envet_type = event[6]
+            if event_type == "RBR":
                 pass
-            elif obs == "XRA":
+            elif event_type == "XRA":
                 pass
             else:
                 pass
