@@ -232,6 +232,10 @@ class NoaaReport(object):
     def set_particulars(self):
         """Reads the particulars column.
 
+        Compares the number of the columns, and based on the event type, thies
+        to set which of the last columns are particulars and which are active
+        regions.
+
         Returns
         -------
         list
@@ -241,14 +245,28 @@ class NoaaReport(object):
         """
 
         self.__check_data()
+        particulars = []
         for event in self._data:
-            envet_type = event[6]
+            event_type = event[6]
             if event_type == "RBR":
-                pass
-            elif event_type == "XRA":
-                pass
+                particular = event[8]
             else:
-                pass
+                if len(event) < 9:
+                    particular = ""
+                elif len(event) == 11:
+                    particular = event[8] + " " + event[9]
+                elif len(event) == 10:
+                    if self.is_active_region(event[-1]):
+                        particular = event[-2]
+                    else:
+                        particular = ""
+                elif len(event) == 9:
+                    if self.is_active_region(event[-1]):
+                        particular = ""
+                    else:
+                        particular = event[-1]
+
+            particulars.append(particular)
 
         return particulars
 
@@ -273,6 +291,17 @@ class NoaaReport(object):
         regions = []
         return regions
 
+    def is_active_region(self, ar):
+        try:
+            ar = int(ar)
+        except ValueError:
+            return False
+
+        ar = str(ar)
+        if len(ar) != 4:
+            return False
+
+        return True
 
     @classmethod
     def get_regions_from_other_day(cls, year, month, day, path):
