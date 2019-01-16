@@ -12,8 +12,10 @@ pip install noaareport
 
 ### CLI tool
 
+There is a very basic cli tool that can be used once the package is installed.
+
 ```bash
-./install_cli ~/Path/To/Report/Files/
+python -m noaareport ~/reports/2005_events 2005 03 10
 ```
 
-In your reports folder the folders for each year must be set as in noaa's website. E.g: 2014 -> 2014_events/. You can use the grabit.sh script to download all the files from 1996 to 2018.
+You can use the grabit.sh script to download all the files from 1998 to 2018.

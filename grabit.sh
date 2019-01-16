@@ -3,7 +3,7 @@
 mkdir -p reports
 cd reports
 
-for i in $(seq 1996 2018); do
+for i in $(seq 1998 2018); do
     year="$i"
     filename="$year"
     filename+="_events.tar.gz"

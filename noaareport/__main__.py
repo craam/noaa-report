@@ -1,14 +1,16 @@
 import sys
 import os
 
-from noaareport import NoaaReport
+import pandas as pd
+
+from .noaareport import NoaaReport
 
 def usage(status):
     print("Usage: report [PATH] [YEAR] [MONTH] [DAY]")
     print("Optional: report [PATH] [YEAR] [MONTH] [DAY] [EVENT_BEGIN] [EVENT_END]")
     print("\t-h\t this help message.")
     print("\nExample:")
-    print("report 2002 4 9 12:40:00 13:00:00")
+    print("report ~/reports/2002_events/ 2002 4 9 12:40:00 13:00:00")
     print("\nWritten by Edison Neto (2019)")
     sys.exit(status)
 
@@ -28,7 +30,8 @@ month = sys.argv[3]
 day = sys.argv[4]
 
 report = NoaaReport(year, month, day, path)
-print(report.set_final_data())
+with pd.option_context('display.max_rows', None, 'display.max_columns', None):
+    print(report.get_dataframe())
 
 if len(sys.argv) > 6:
     common_str = "0000-00-00 "
