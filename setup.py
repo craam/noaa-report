@@ -5,7 +5,7 @@ with open("README.md", "r") as readme:
 
 setup(
     name="noaareport",
-    version="0.1.3",
+    version="0.2",
     author="Edison Neto",
     author_email="ednetoali@gmail.com",
     description="A package to read noaa solar reports",
