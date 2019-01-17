@@ -8,6 +8,7 @@ import pandas as pd
 
 class NoEventReports(Exception):
     """No events reported in this day. """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -105,8 +106,7 @@ class NoaaReport(object):
                     continue
                 elif line.startswith("NO"):
                     raise NoEventReports("No events reported")
-                
-                
+
                 event = line[:8].strip()
                 event_begin = line[8:16].strip()
                 event_max = line[16:25].strip()
@@ -117,7 +117,7 @@ class NoaaReport(object):
                 loc = line[46:55].strip()
                 particulars = line[55:73].strip()
                 region = line[73:].strip()
-                
+
                 self._data.append([
                     event, event_begin, event_max, event_end, obs, quality,
                     event_type, loc, particulars, region
@@ -290,8 +290,8 @@ class NoaaReport(object):
             "reg": self.get_reg()
         }
 
-        columns=["event", "begin", "max", "end", "obs", "Q", "type",
-                "loc/freq", "particulars", "reg"]
+        columns = ["event", "begin", "max", "end", "obs", "Q", "type",
+                   "loc/freq", "particulars", "reg"]
         self.df = pd.DataFrame(data, columns=columns)
 
         return self.df
