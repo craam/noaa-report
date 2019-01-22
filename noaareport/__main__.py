@@ -1,18 +1,20 @@
 import sys
-import os
 
 import pandas as pd
 
 from .noaareport import NoaaReport
 
+
 def usage(status):
     print("Usage: report [PATH] [YEAR] [MONTH] [DAY]")
-    print("Optional: report [PATH] [YEAR] [MONTH] [DAY] [EVENT_BEGIN] [EVENT_END]")
+    print(
+        "Optional: report [PATH] [YEAR] [MONTH] [DAY]  [EVENT_BEGIN] [EVENT_END]")
     print("\t-h\t this help message.")
     print("\nExample:")
     print("report ~/reports/2002_events/ 2002 4 9 12:40:00 13:00:00")
     print("\nWritten by Edison Neto (2019)")
     sys.exit(status)
+
 
 if len(sys.argv) == 1:
     usage(-1)
