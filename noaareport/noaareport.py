@@ -1,9 +1,10 @@
 from __future__ import print_function
 
 import os
-import datetime as dt
 
 import pandas as pd
+
+from datetime import timedelta
 
 
 class NoEventReports(Exception):
@@ -316,10 +317,10 @@ class NoaaReport(object):
         start_time = str(start_time)
         end_time = str(end_time)
         start_time = start_time[11:16].replace(":", "")
-        start_time = dt.timedelta(hours=int(start_time[0:2]),
+        start_time = timedelta(hours=int(start_time[0:2]),
                                   minutes=int(start_time[2:]))
         end_time = end_time[11:16].replace(":", "")
-        end_time = dt.timedelta(hours=int(end_time[0:2]),
+        end_time = timedelta(hours=int(end_time[0:2]),
                                 minutes=int(end_time[2:]))
         ar = []
 
@@ -332,14 +333,14 @@ class NoaaReport(object):
             if not self.df["end"][i][0].isnumeric():
                 self.df["end"][i] = self.df["end"][i][1:]
 
-            event_begin = dt.timedelta(hours=int(self.df["begin"][i][0:2]),
+            event_begin = timedelta(hours=int(self.df["begin"][i][0:2]),
                                        minutes=int(self.df["begin"][i][2:]))
 
-            event_end = dt.timedelta(hours=int(self.df["end"][i][0:2]),
+            event_end = timedelta(hours=int(self.df["end"][i][0:2]),
                                      minutes=int(self.df["end"][i][2:]))
 
-            eleven_oclock = dt.timedelta(hours=23, minutes=00)
-            fifteen_minutes = dt.timedelta(minutes=15)
+            eleven_oclock = timedelta(hours=23, minutes=00)
+            fifteen_minutes = timedelta(minutes=15)
             if event_begin >= eleven_oclock:
                 continue
 
