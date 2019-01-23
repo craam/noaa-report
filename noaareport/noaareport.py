@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import os
 
 import pandas as pd
@@ -127,7 +125,7 @@ class NoaaReport(object):
         return self._data
 
     def get_event(self):
-        """Sets the event column.
+        """Gets the event column.
 
         Returns
         -------
@@ -140,7 +138,7 @@ class NoaaReport(object):
         return [i[0] for i in self._data]
 
     def get_begin(self):
-        """Sets the begin column.
+        """Gets the begin column.
 
         Returns
         -------
@@ -153,7 +151,7 @@ class NoaaReport(object):
         return [i[1] for i in self._data]
 
     def get_max(self):
-        """Sets the max column.
+        """Gets the max column.
 
         Returns
         -------
@@ -166,7 +164,7 @@ class NoaaReport(object):
         return [i[2] for i in self._data]
 
     def get_end(self):
-        """Sets the end column.
+        """Gets the end column.
 
         Returns
         -------
@@ -179,7 +177,7 @@ class NoaaReport(object):
         return [i[3] for i in self._data]
 
     def get_obs(self):
-        """Sets the obs column.
+        """Gets the obs column.
 
         Returns
         -------
@@ -192,7 +190,7 @@ class NoaaReport(object):
         return [i[4] for i in self._data]
 
     def get_Q(self):
-        """Sets the Q column.
+        """Gets the Q column.
 
         Returns
         -------
@@ -205,7 +203,7 @@ class NoaaReport(object):
         return [i[5] for i in self._data]
 
     def get_type(self):
-        """Sets the type column.
+        """Gets the type column.
 
         Returns
         -------
@@ -218,7 +216,7 @@ class NoaaReport(object):
         return [i[6] for i in self._data]
 
     def get_freq(self):
-        """Sets the loc/freq column.
+        """Gets the loc/freq column.
 
         Returns
         -------
@@ -231,7 +229,7 @@ class NoaaReport(object):
         return [i[7] for i in self._data]
 
     def get_particulars(self):
-        """Sets the particulars column.
+        """Gets the particulars column.
 
         Returns
         -------
@@ -244,7 +242,7 @@ class NoaaReport(object):
         return [i[8] for i in self._data]
 
     def get_reg(self):
-        """Sets the reg column.
+        """Gets the reg column.
 
         Returns
         -------
@@ -257,6 +255,19 @@ class NoaaReport(object):
         return [i[9] for i in self._data]
 
     def is_active_region(self, ar):
+        """Checks if the given active region code is valid.
+
+        Parameters
+        ----------
+        ar: str
+            The active region noaa code.
+
+        Returns
+        -------
+        bool:
+            If the ar is valid or not.
+        """
+
         try:
             ar = int(ar)
         except ValueError:
@@ -346,17 +357,8 @@ class NoaaReport(object):
 
             if (event_begin >= start_time and
                     event_end <= end_time + fifteen_minutes):
-                print("\nBegin: {}".format(self.df["begin"][i]))
-                print("Max: {}".format(self.df["max"][i]))
-                print("End: {}".format(self.df["end"][i]))
-                print("Type: {}".format(self.df["type"][i]))
-                print("Loc/Freq: {}".format(self.df["loc/freq"][i]))
-                print("Region: {}".format(self.df["reg"][i]))
-
                 ar.append(self.df["reg"][i])
 
         ar = [x for x in ar if x is not None]
-        if len(ar) == 0:
-            print("No regions identified.")
 
         return ar
