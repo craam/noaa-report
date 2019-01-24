@@ -1,9 +1,8 @@
-from __future__ import print_function
-
 import os
-import datetime as dt
 
 import pandas as pd
+
+from datetime import timedelta
 
 
 class NoEventReports(Exception):
@@ -126,7 +125,7 @@ class NoaaReport(object):
         return self._data
 
     def get_event(self):
-        """Sets the event column.
+        """Gets the event column.
 
         Returns
         -------
@@ -139,7 +138,7 @@ class NoaaReport(object):
         return [i[0] for i in self._data]
 
     def get_begin(self):
-        """Sets the begin column.
+        """Gets the begin column.
 
         Returns
         -------
@@ -152,7 +151,7 @@ class NoaaReport(object):
         return [i[1] for i in self._data]
 
     def get_max(self):
-        """Sets the max column.
+        """Gets the max column.
 
         Returns
         -------
@@ -165,7 +164,7 @@ class NoaaReport(object):
         return [i[2] for i in self._data]
 
     def get_end(self):
-        """Sets the end column.
+        """Gets the end column.
 
         Returns
         -------
@@ -178,7 +177,7 @@ class NoaaReport(object):
         return [i[3] for i in self._data]
 
     def get_obs(self):
-        """Sets the obs column.
+        """Gets the obs column.
 
         Returns
         -------
@@ -191,7 +190,7 @@ class NoaaReport(object):
         return [i[4] for i in self._data]
 
     def get_Q(self):
-        """Sets the Q column.
+        """Gets the Q column.
 
         Returns
         -------
@@ -204,7 +203,7 @@ class NoaaReport(object):
         return [i[5] for i in self._data]
 
     def get_type(self):
-        """Sets the type column.
+        """Gets the type column.
 
         Returns
         -------
@@ -217,7 +216,7 @@ class NoaaReport(object):
         return [i[6] for i in self._data]
 
     def get_freq(self):
-        """Sets the loc/freq column.
+        """Gets the loc/freq column.
 
         Returns
         -------
@@ -230,7 +229,7 @@ class NoaaReport(object):
         return [i[7] for i in self._data]
 
     def get_particulars(self):
-        """Sets the particulars column.
+        """Gets the particulars column.
 
         Returns
         -------
@@ -243,7 +242,7 @@ class NoaaReport(object):
         return [i[8] for i in self._data]
 
     def get_reg(self):
-        """Sets the reg column.
+        """Gets the reg column.
 
         Returns
         -------
@@ -256,6 +255,19 @@ class NoaaReport(object):
         return [i[9] for i in self._data]
 
     def is_active_region(self, ar):
+        """Checks if the given active region code is valid.
+
+        Parameters
+        ----------
+        ar: str
+            The active region noaa code.
+
+        Returns
+        -------
+        bool:
+            If the ar is valid or not.
+        """
+
         try:
             ar = int(ar)
         except ValueError:
@@ -316,10 +328,10 @@ class NoaaReport(object):
         start_time = str(start_time)
         end_time = str(end_time)
         start_time = start_time[11:16].replace(":", "")
-        start_time = dt.timedelta(hours=int(start_time[0:2]),
+        start_time = timedelta(hours=int(start_time[0:2]),
                                   minutes=int(start_time[2:]))
         end_time = end_time[11:16].replace(":", "")
-        end_time = dt.timedelta(hours=int(end_time[0:2]),
+        end_time = timedelta(hours=int(end_time[0:2]),
                                 minutes=int(end_time[2:]))
         ar = []
 
@@ -332,69 +344,21 @@ class NoaaReport(object):
             if not self.df["end"][i][0].isnumeric():
                 self.df["end"][i] = self.df["end"][i][1:]
 
-            event_begin = dt.timedelta(hours=int(self.df["begin"][i][0:2]),
+            event_begin = timedelta(hours=int(self.df["begin"][i][0:2]),
                                        minutes=int(self.df["begin"][i][2:]))
 
-            event_end = dt.timedelta(hours=int(self.df["end"][i][0:2]),
+            event_end = timedelta(hours=int(self.df["end"][i][0:2]),
                                      minutes=int(self.df["end"][i][2:]))
 
-            eleven_oclock = dt.timedelta(hours=23, minutes=00)
-            fifteen_minutes = dt.timedelta(minutes=15)
+            eleven_oclock = timedelta(hours=23, minutes=00)
+            fifteen_minutes = timedelta(minutes=15)
             if event_begin >= eleven_oclock:
                 continue
 
             if (event_begin >= start_time and
                     event_end <= end_time + fifteen_minutes):
-                print("\nBegin: {}".format(self.df["begin"][i]))
-                print("Max: {}".format(self.df["max"][i]))
-                print("End: {}".format(self.df["end"][i]))
-                print("Type: {}".format(self.df["type"][i]))
-                print("Loc/Freq: {}".format(self.df["loc/freq"][i]))
-                print("Region: {}".format(self.df["reg"][i]))
-
                 ar.append(self.df["reg"][i])
 
         ar = [x for x in ar if x is not None]
-        if len(ar) == 0:
-            print("No regions identified.")
 
         return ar
-
-    def stuff(self):
-        saves = []
-        for i in range(0, len(self.df)):
-            if (self.df["type"][i] == "XRA" and (
-                self.df["particulars"][i].startswith("M")
-                    or self.df["particulars"][i].startswith("X"))):
-                if (int(self.df["begin"][i]) < 800
-                        or int(self.df["begin"][i]) > 1800):
-                    continue
-                saves.append(i)
-
-        for sav in saves:
-            if sav+5 > len(self.df["type"]):
-                df_max = (len(self.df["type"])-1)
-                for i in range(sav-5, df_max):
-                    if self.df["type"][i] == "RBR":
-                        print("\nBegin: {}".format(self.df["begin"][i]))
-                        print("Freq: {}".format(self.df["loc/freq"][i]))
-                        print("Particulars: {}".format(
-                            self.df["particulars"][i]))
-                        print("Index: {}".format(i))
-
-            if sav > 5:
-                for i in range(sav-5, sav+5):
-                    if self.df["type"][i] == "RBR":
-                        print("\nBegin: {}".format(self.df["begin"][i]))
-                        print("Freq: {}".format(self.df["loc/freq"][i]))
-                        print("Particulars: {}".format(
-                            self.df["particulars"][i]))
-                        print("Index: {}".format(i))
-            else:
-                for i in range(0, sav+5):
-                    if self.df["type"][i] == "RBR":
-                        print("\nBegin: {}".format(self.df["begin"][i]))
-                        print("Freq: {}".format(self.df["loc/freq"][i]))
-                        print("Particulars: {}".format(
-                            self.df["particulars"][i]))
-                        print("Index: {}".format(i))

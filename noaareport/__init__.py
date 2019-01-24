@@ -1,4 +1,4 @@
-from .noaareport import NoaaReport
+from .noaareport import NoaaReport, NoEventReports
 
 name = "noaareport"
-__version__ = "0.2"
+__version__ = "0.2.1"
