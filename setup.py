@@ -10,7 +10,7 @@ setup(
     author_email="ednetoali@gmail.com",
     description="A package to read noaa solar reports",
     long_description=long_description,
-    url="https://github.com/3ldr0n/noaa-report",
+    url="https://github.com/craam/noaa-report",
     packages=['noaareport'],
     include_package_data=True,
     install_requires=[
