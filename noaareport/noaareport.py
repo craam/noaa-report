@@ -29,7 +29,7 @@ class NoaaReport(object):
     path: str
         The path to the report file.
     filename: str
-        Filename set for the selected day
+        Filename set for the selected day.
 
     """
 
@@ -96,6 +96,7 @@ class NoaaReport(object):
             There are no events in this day.
 
         """
+
         with open(os.path.join(self._path, self._filename)) as _file:
             for line in _file.readlines():
                 if len(line.strip()) == 0:
@@ -266,6 +267,7 @@ class NoaaReport(object):
         -------
         bool:
             If the ar is valid or not.
+
         """
 
         try:
@@ -284,7 +286,7 @@ class NoaaReport(object):
 
         Returns
         -------
-        pandas.DatFrame
+        pandas.DataFrame
             A DataFrame with the data.
 
         """
@@ -329,10 +331,10 @@ class NoaaReport(object):
         end_time = str(end_time)
         start_time = start_time[11:16].replace(":", "")
         start_time = timedelta(hours=int(start_time[0:2]),
-                                  minutes=int(start_time[2:]))
+                               minutes=int(start_time[2:]))
         end_time = end_time[11:16].replace(":", "")
         end_time = timedelta(hours=int(end_time[0:2]),
-                                minutes=int(end_time[2:]))
+                             minutes=int(end_time[2:]))
         ar = []
 
         for i in range(0, len(self.df)):
@@ -345,10 +347,10 @@ class NoaaReport(object):
                 self.df["end"][i] = self.df["end"][i][1:]
 
             event_begin = timedelta(hours=int(self.df["begin"][i][0:2]),
-                                       minutes=int(self.df["begin"][i][2:]))
+                                    minutes=int(self.df["begin"][i][2:]))
 
             event_end = timedelta(hours=int(self.df["end"][i][0:2]),
-                                     minutes=int(self.df["end"][i][2:]))
+                                  minutes=int(self.df["end"][i][2:]))
 
             eleven_oclock = timedelta(hours=23, minutes=00)
             fifteen_minutes = timedelta(minutes=15)
